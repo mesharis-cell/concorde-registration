@@ -29,7 +29,7 @@ const Container: React.FC<ContainerProps> = ({
 }) => {
   return (
     <section
-      className={classNames(styles[size], background ? background : "mobile-bg-gold")}
+      className={classNames(styles[size], background ? background : "bg-shell-mobile")}
       {...props}
       id={id}
     >
@@ -37,7 +37,7 @@ const Container: React.FC<ContainerProps> = ({
         <div
           className={classNames(
             className,
-            grain ? "bg-luxury-grain" : "bg-luxury-gold add-grain-3",
+            grain ? "bg-panel-muted" : "bg-panel-base add-texture",
             "relative min-h-full md:h-full"
           )}
         >

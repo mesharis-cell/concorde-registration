@@ -1,8 +1,7 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
-import { chivasLoudBold, chivasLuxRegular } from "@/fonts";
+import { displayFontBold, bodyFontRegular } from "@/fonts";
 import { EMAIL_ADDRESS, WHATSAPP_NUMBER } from "@/constants";
 
 interface FooterProps {
@@ -10,30 +9,24 @@ interface FooterProps {
 }
 
 const Footer: React.FC<FooterProps> = ({ className }) => {
-  // Generic WhatsApp message for registration page
   const whatsappMessage = "Hi, I need assistance with registration";
   const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(whatsappMessage)}`;
 
   return (
     <footer className={`site-footer w-full ${className}`}>
-      <div className="site-footer__container pt-8 pb-2">
-        <div className="site-footer__navigation__line mb-2 h-px w-full bg-white/20"></div>
-        {/* Copyright */}
+      <div className="site-footer__container pt-8 pb-4">
+        <div className="site-footer__navigation__line mb-2 h-px w-full bg-white/20" />
         <div
-          className={`site-footer__copyright mb-2 text-center text-[11px] text-white sm:text-xs ${chivasLoudBold.className}`}
+          className={`site-footer__copyright mb-2 text-center text-[11px] text-white sm:text-xs ${displayFontBold.className}`}
         >
-          © 2024 Chivas Brothers International Limited
+          © 2026 Savvio Concorde
         </div>
 
-        {/* Business Information */}
         <div
-          className={`site-footer__business-info mb-2 text-center text-[10px] text-white/90 sm:text-xs ${chivasLuxRegular.className}`}
+          className={`site-footer__business-info mb-3 text-center text-[10px] text-white/90 sm:text-xs ${bodyFontRegular.className}`}
         >
           <div className="flex flex-col items-center justify-center space-y-1">
-            <p>
-              Pernod Ricard Middle East, DIFC Branch, ICD Brookfield Place, Dubai International
-              Financial Centre (DIFC), United Arab Emirates
-            </p>
+            <p>Savvio Concorde Event Registration Platform</p>
             {(WHATSAPP_NUMBER || EMAIL_ADDRESS) && (
               <div className="flex items-center justify-center gap-2">
                 {WHATSAPP_NUMBER && (
@@ -66,28 +59,10 @@ const Footer: React.FC<FooterProps> = ({ className }) => {
           </div>
         </div>
 
-        {/* Disclaimer */}
         <div
-          className={`site-footer__disclaimer text-center text-xs text-white/80 ${chivasLoudBold.className}`}
+          className={`site-footer__disclaimer text-center text-xs text-white/80 ${displayFontBold.className}`}
         >
-          {/* Navigation */}
-          <div className="site-footer__navigation">
-            <div className="site-footer__navigation__secondary flex justify-center gap-4 !text-[11px] !font-normal sm:text-xs">
-              <Link
-                href="/terms"
-                className={`site-footer__page-link text-white transition-opacity hover:opacity-80 ${chivasLoudBold.className}`}
-              >
-                Terms and Conditions
-              </Link>
-              <span className="text-white">|</span>
-              <Link
-                href="/privacy"
-                className={`site-footer__page-link text-white transition-opacity hover:opacity-80 ${chivasLoudBold.className}`}
-              >
-                Privacy Policy
-              </Link>
-            </div>
-          </div>
+          Registration is for invited attendees only.
         </div>
       </div>
     </footer>

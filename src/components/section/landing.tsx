@@ -59,7 +59,7 @@ function Landing() {
       <Button
         size="xl"
         onClick={handleRegisterClick}
-        className="!font-chivas-loud-medium uppercase"
+        className="!font-display-medium uppercase"
       >
         REGISTER NOW
       </Button>

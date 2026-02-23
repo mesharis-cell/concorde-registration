@@ -98,7 +98,7 @@ export interface EventInfo {
   location: EventLocation;
   dateRange: EventDateRange;
   config: EventConfig;
-  // Singapore Phase 2 additions
+  // Event hospitality configuration
   hotelConfig?: HotelConfig | null;
   termsConditions?: string | null;
   privacyPolicy?: string | null;

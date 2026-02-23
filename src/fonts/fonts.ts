@@ -1,82 +1,94 @@
-import localFont from "next/font/local";
+import { DM_Sans } from "next/font/google";
 
-// Chivas Loud Font Family
-export const chivasLoud = localFont({
-  src: "../../public/Fonts/ChivasLoud.ttf",
+export const displayFont = DM_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
   display: "swap",
-  variable: "--font-chivas-loud"
+  variable: "--font-display"
 });
 
-export const chivasLoudBold = localFont({
-  src: "../../public/Fonts/ChivasLoud_SBd.ttf",
+export const displayFontBold = DM_Sans({
+  subsets: ["latin"],
+  weight: "700",
   display: "swap",
-  variable: "--font-chivas-loud-bold"
+  variable: "--font-display-bold"
 });
 
-export const chivasLoudExtraBold = localFont({
-  src: "../../public/Fonts/ChivasLoud_XBd.ttf",
+export const displayFontExtraBold = DM_Sans({
+  subsets: ["latin"],
+  weight: "700",
   display: "swap",
-  variable: "--font-chivas-loud-extra-bold"
+  variable: "--font-display-extra-bold"
 });
 
-export const chivasLoudExtraBoldItalic = localFont({
-  src: "../../public/Fonts/ChivasLoud_XBdIt.ttf",
+export const displayFontExtraBoldItalic = DM_Sans({
+  subsets: ["latin"],
+  weight: "700",
+  style: "italic",
   display: "swap",
-  variable: "--font-chivas-loud-extra-bold-italic"
+  variable: "--font-display-extra-bold-italic"
 });
 
-export const chivasLoudMedium = localFont({
-  src: "../../public/Fonts/ChivasLoud_Md.ttf",
+export const displayFontMedium = DM_Sans({
+  subsets: ["latin"],
+  weight: "500",
   display: "swap",
-  variable: "--font-chivas-loud-medium"
+  variable: "--font-display-medium"
 });
 
-export const chivasLoudRegular = localFont({
-  src: "../../public/Fonts/ChivasLoud_Rg.ttf",
+export const displayFontRegular = DM_Sans({
+  subsets: ["latin"],
+  weight: "400",
   display: "swap",
-  variable: "--font-chivas-loud-regular"
+  variable: "--font-display-regular"
 });
 
-// Chivas Lux Font Family
-export const chivasLuxLight = localFont({
-  src: "../../public/Fonts/ChivasLux_Lt.ttf",
+export const bodyFontLight = DM_Sans({
+  subsets: ["latin"],
+  weight: "400",
   display: "swap",
-  variable: "--font-chivas-lux-light"
+  variable: "--font-body-light"
 });
 
-export const chivasLuxRegular = localFont({
-  src: "../../public/Fonts/ChivasLux_Rg.ttf",
+export const bodyFontRegular = DM_Sans({
+  subsets: ["latin"],
+  weight: "400",
   display: "swap",
-  variable: "--font-chivas-lux-regular"
+  variable: "--font-body-regular"
 });
 
-export const chivasLuxSemiBold = localFont({
-  src: "../../public/Fonts/ChivasLux_SBd.ttf",
+export const bodyFontSemiBold = DM_Sans({
+  subsets: ["latin"],
+  weight: "500",
   display: "swap",
-  variable: "--font-chivas-lux-semibold"
+  variable: "--font-body-semibold"
 });
 
-// Chivas Priori Font Family (OTF format)
-export const chivasPrioriLight = localFont({
-  src: "../../public/Fonts/ChivasPrioriLight[1].otf",
+export const accentFontLight = DM_Sans({
+  subsets: ["latin"],
+  weight: "400",
   display: "swap",
-  variable: "--font-chivas-priori-light"
+  variable: "--font-accent-light"
 });
 
-export const chivasPrioriRegular = localFont({
-  src: "../../public/Fonts/ChivasPrioriRegular[1].otf",
+export const accentFontRegular = DM_Sans({
+  subsets: ["latin"],
+  weight: "400",
   display: "swap",
-  variable: "--font-chivas-priori-regular"
+  variable: "--font-accent-regular"
 });
 
-export const chivasPrioriItalic = localFont({
-  src: "../../public/Fonts/ChivasPrioriItalic[1].otf",
+export const accentFontItalic = DM_Sans({
+  subsets: ["latin"],
+  weight: "400",
+  style: "italic",
   display: "swap",
-  variable: "--font-chivas-priori-italic"
+  variable: "--font-accent-italic"
 });
 
-export const chivasPrioriBlack = localFont({
-  src: "../../public/Fonts/ChivasPrioriBlack[1].otf",
+export const accentFontBlack = DM_Sans({
+  subsets: ["latin"],
+  weight: "700",
   display: "swap",
-  variable: "--font-chivas-priori-black"
+  variable: "--font-accent-black"
 });

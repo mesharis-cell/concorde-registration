@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { classNames } from "@/utils";
-import { chivasLuxRegular } from "@/fonts";
+import { bodyFontRegular } from "@/fonts";
 import { getEventInfo } from "@/services/get-event";
 
 interface DynamicHotelFieldProps {
@@ -43,8 +43,8 @@ export function DynamicHotelField({
                     }
                 } else {
                     setHotelOptions([
-                        { value: 'Marina Bay Sands', label: 'Marina Bay Sands' },
-                        { value: 'The Fullerton Hotel', label: 'The Fullerton Hotel' }
+                        { value: 'Harbor Grand Hotel', label: 'Harbor Grand Hotel' },
+                        { value: 'Riverside Suites', label: 'Riverside Suites' }
                     ]);
                 }
 
@@ -52,8 +52,8 @@ export function DynamicHotelField({
                 console.error('Failed to fetch hotel options:', error);
                 // Fallback options
                 setHotelOptions([
-                    { value: 'Marina Bay Sands', label: 'Marina Bay Sands' },
-                    { value: 'The Fullerton Hotel', label: 'The Fullerton Hotel' }
+                    { value: 'Harbor Grand Hotel', label: 'Harbor Grand Hotel' },
+                    { value: 'Riverside Suites', label: 'Riverside Suites' }
                 ]);
             } finally {
                 setLoading(false);
@@ -78,16 +78,16 @@ export function DynamicHotelField({
             <select
                 className={classNames(
                     "w-full px-3 py-1.5 md:py-2 md:text-lg rounded-md",
-                    "rounded bg-[#D9D9D9] text-center text-[#878680] !shadow-[inset_0_5px_8px_rgba(0,0,0,0.25)]",
+                    "rounded bg-[#e2e8f0] text-center text-[#64748b] !shadow-[inset_0_5px_8px_rgba(0,0,0,0.25)]",
                     "transition-all outline-none focus:!shadow-[inset_0_5px_8px_rgba(0,0,0,0.25)]",
                     "appearance-none cursor-pointer",
-                    chivasLuxRegular.className
+                    bodyFontRegular.className
                 )}
                 value={value || ""}
                 required={required}
                 onChange={(e) => onChange(e.target.value)}
             >
-                <option value="" className="text-[#878680]">{placeholder}</option>
+                <option value="" className="text-[#64748b]">{placeholder}</option>
                 {hotelOptions.map((option) => (
                     <option key={option.value} value={option.value} className="text-black">
                         {option.label}

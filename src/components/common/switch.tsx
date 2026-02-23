@@ -1,4 +1,4 @@
-import { chivasLoudExtraBold } from "@/fonts";
+import { displayFontExtraBold } from "@/fonts";
 import { classNames } from "@/utils";
 
 interface SwitchProps {
@@ -9,22 +9,35 @@ interface SwitchProps {
   disable?: boolean;
 }
 
-const Switch: React.FC<SwitchProps> = ({ toggle, toggleTextTrue, toggleTextFalse, onClick, disable, ...props }) => {
+const Switch: React.FC<SwitchProps> = ({
+  toggle,
+  toggleTextTrue,
+  toggleTextFalse,
+  onClick,
+  disable,
+  ...props
+}) => {
   const toggleClass = "transform translate-x-[32px]";
 
   return (
     <div
       className={classNames(
         disable ? "cursor-not-allowed opacity-70" : "",
-        "relative flex h-[30px] w-[72px] cursor-pointer items-center overflow-hidden rounded-full p-[2px] uppercase shadow-inner",
-        toggle ? "bg-[#E2C17E]" : "bg-[#979797]",
-        chivasLoudExtraBold.className
+        "relative flex h-[30px] w-[72px] cursor-pointer items-center overflow-hidden rounded-full p-[2px] shadow-inner",
+        toggle ? "bg-[#d4a574]" : "bg-[#979797]",
+        displayFontExtraBold.className
       )}
       onClick={onClick}
       {...props}
     >
-      {toggle && <span className="absolute left-2 z-10 text-xs text-white">{toggleTextTrue || "ON"}</span>}
-      {!toggle && <span className="absolute right-2 z-10 text-xs text-white">{toggleTextFalse || "OFF"}</span>}
+      {toggle && (
+        <span className="absolute left-2 z-10 text-[11px] text-white">{toggleTextTrue || "Yes"}</span>
+      )}
+      {!toggle && (
+        <span className="absolute right-2 z-10 text-[11px] text-white">
+          {toggleTextFalse || "No"}
+        </span>
+      )}
 
       <div
         className={

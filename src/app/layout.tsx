@@ -1,87 +1,84 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { ChildrenProps } from "@/types";
 import { DesktopOnlyLayout } from "@/components";
 import "../styles/globals.css";
 import {
-  chivasLoud,
-  chivasLoudBold,
-  chivasLoudExtraBold,
-  chivasLoudExtraBoldItalic,
-  chivasLoudMedium,
-  chivasLoudRegular,
-  chivasLuxLight,
-  chivasLuxRegular,
-  chivasLuxSemiBold,
-  chivasPrioriLight,
-  chivasPrioriRegular,
-  chivasPrioriItalic,
-  chivasPrioriBlack
+  displayFont,
+  displayFontBold,
+  displayFontExtraBold,
+  displayFontExtraBoldItalic,
+  displayFontMedium,
+  displayFontRegular,
+  bodyFontLight,
+  bodyFontRegular,
+  bodyFontSemiBold,
+  accentFontLight,
+  accentFontRegular,
+  accentFontItalic,
+  accentFontBlack
 } from "@/fonts";
 
 export const metadata: Metadata = {
-  title: "Chivas Regal Abu Dhabi | Event Companion",
+  title: "Savvio Concorde | Event Registration",
   description:
-    "Mobile-first event companion app with personalized itineraries and activity details for event attendees.",
+    "Savvio Concorde event registration microsite with instant check-in QR and Google Wallet pass access.",
   keywords: [
-    "event",
-    "microsite",
-    "itinerary",
-    "attendees",
+    "savvio concorde",
+    "event registration",
+    "event check-in",
+    "google wallet pass",
     "registration",
-    "chivas regal",
-    "abu dhabi"
+    "attendees"
   ],
   icons: {
     icon: [
-      { url: "/favicon.ico", sizes: "32x32", type: "image/x-icon" },
-      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
-      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" }
+      { url: "/logo-S-white.png", sizes: "558x558", type: "image/png" },
+      { url: "/logo-S-white@2x.png", sizes: "1116x1116", type: "image/png" },
+      { url: "/logo-S-white@3x.png", sizes: "1674x1674", type: "image/png" }
     ],
-    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+    shortcut: [{ url: "/logo-S-white.png", type: "image/png" }],
+    apple: [{ url: "/logo-S-white@2x.png", sizes: "1116x1116", type: "image/png" }],
     other: [
-      { rel: "icon", url: "/android-chrome-192x192.png", sizes: "192x192", type: "image/png" },
-      { rel: "icon", url: "/android-chrome-512x512.png", sizes: "512x512", type: "image/png" }
+      { rel: "icon", url: "/logo-S-white.png", sizes: "558x558", type: "image/png" },
+      { rel: "icon", url: "/logo-S-white@2x.png", sizes: "1116x1116", type: "image/png" }
     ]
   },
-  manifest: "/site.webmanifest",
-  themeColor: "#b88d3d",
-  viewport: "width=device-width, initial-scale=1"
+  manifest: "/site.webmanifest"
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#111111"
 };
 
 export default function RootLayout({ children }: ChildrenProps) {
+  const gaId = process.env.NEXT_PUBLIC_GA_ID;
+
   return (
     <html
       lang="en"
       suppressHydrationWarning
-      className={` ${chivasLoud.variable} ${chivasLoudBold.variable} ${chivasLoudExtraBold.variable} ${chivasLoudExtraBoldItalic.variable} ${chivasLoudMedium.variable} ${chivasLoudRegular.variable} ${chivasLuxLight.variable} ${chivasLuxRegular.variable} ${chivasLuxSemiBold.variable} ${chivasPrioriLight.variable} ${chivasPrioriRegular.variable} ${chivasPrioriItalic.variable} ${chivasPrioriBlack.variable} `}
+      className={` ${displayFont.variable} ${displayFontBold.variable} ${displayFontExtraBold.variable} ${displayFontExtraBoldItalic.variable} ${displayFontMedium.variable} ${displayFontRegular.variable} ${bodyFontLight.variable} ${bodyFontRegular.variable} ${bodyFontSemiBold.variable} ${accentFontLight.variable} ${accentFontRegular.variable} ${accentFontItalic.variable} ${accentFontBlack.variable} `}
     >
       <body className="antialiased">
-        {/* Google Analytics - Fail-safe implementation for VIP event */}
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-EWC94BX4W7"
-          strategy="afterInteractive"
-        />
-        <Script id="gtag-init" strategy="afterInteractive">
-          {`
-            try {
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){
-                try {
-                  dataLayer.push(arguments);
-                } catch(e) {
-                  // Silent fail - won't crash app
-                }
-              }
-              gtag('js', new Date());
-              gtag('config', 'G-EWC94BX4W7', {
-                anonymize_ip: true
-              });
-            } catch(error) {
-              // Silent fail - analytics failure won't affect user experience
-            }
-          `}
-        </Script>
+        {gaId ? (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+              strategy="afterInteractive"
+            />
+            <Script id="gtag-init" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){window.dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${gaId}', { anonymize_ip: true });
+              `}
+            </Script>
+          </>
+        ) : null}
         <DesktopOnlyLayout>{children}</DesktopOnlyLayout>
       </body>
     </html>

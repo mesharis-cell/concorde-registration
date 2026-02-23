@@ -1,6 +1,6 @@
 import { MetadataRoute } from "next";
 
-const WEBSITE_HOST_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://chivasregalterrace.com";
+const WEBSITE_HOST_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://demo.savvio.digital";
 
 type ChangeFrequency = "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never";
 
@@ -14,19 +14,18 @@ const StaticRoutes = [
     staticRoute: "/registration"
   },
   {
-    staticRoute: "/terms"
+    staticRoute: "/confirmation"
   },
   {
-    staticRoute: "/privacy"
-  },
-  {
-    staticRoute: "/faq"
+    staticRoute: "/scanner"
   }
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const normalizedBaseUrl = WEBSITE_HOST_URL.replace(/\/$/, "");
+
   const routes = StaticRoutes.map((route) => ({
-    url: `${WEBSITE_HOST_URL}/${route.staticRoute}`,
+    url: route.staticRoute === "/" ? `${normalizedBaseUrl}/` : `${normalizedBaseUrl}${route.staticRoute}`,
     lastModified: new Date().toISOString(),
     changeFrequency,
     priority: 1

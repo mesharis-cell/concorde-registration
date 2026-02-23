@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from "react";
 import {
   registerAttendee,
-  DEFAULT_EVENT_ID,
+  resolveEventIdFromClientSearchParams,
   type RegistrationPayload
 } from "@/services/update-register";
 import {
@@ -11,7 +11,7 @@ import {
   type FormStepConfig
 } from "@/services/get-event";
 import { STORAGE_KEYS } from "@/types/registration";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Cookies from "js-cookie";
 
 interface FormValues {
@@ -22,14 +22,31 @@ interface FieldErrors {
   [key: string]: boolean;
 }
 
+interface RegistrationConfirmationPayload {
+  email: string;
+  fullName: string;
+  phone: string;
+  attendeeId: string;
+  wallet: {
+    googleWalletUrl: string;
+    passReferenceId: string;
+    expiresAt: string;
+  } | null;
+  checkIn: {
+    qrPayloadUrl: string;
+    token: string;
+    expiresAt: string;
+  } | null;
+}
+
 interface UseDynamicStepFormReturn {
+  eventId: string | null;
   currentStep: number;
   totalSteps: number;
   currentStepData: FormStepConfig | undefined;
   formValues: FormValues;
   fieldErrors: FieldErrors;
   isSubmitted: boolean;
-  termsAccepted: boolean;
   submitting: boolean;
   apiError: string;
   loading: boolean; // Loading form configuration
@@ -38,13 +55,12 @@ interface UseDynamicStepFormReturn {
   handleSwitchChange: (name: string) => void;
   handleNext: () => void;
   handleBack: () => void;
-  setTermsAccepted: (accepted: boolean) => void;
   resetForm: () => void;
 }
 
 export function useDynamicStepForm(): UseDynamicStepFormReturn {
-  const router = useRouter();
   const searchParams = useSearchParams();
+  const [eventId, setEventId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [configError, setConfigError] = useState<string>("");
   const [formConfig, setFormConfig] = useState<RegistrationFormConfig | null>(null);
@@ -52,23 +68,29 @@ export function useDynamicStepForm(): UseDynamicStepFormReturn {
   const [formValues, setFormValues] = useState<FormValues>({});
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [termsAccepted, setTermsAccepted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [apiError, setApiError] = useState<string>("");
+
+  useEffect(() => {
+    const resolvedEventId = resolveEventIdFromClientSearchParams(searchParams);
+    setEventId(resolvedEventId);
+  }, [searchParams]);
 
   // Fetch form configuration on mount
   useEffect(() => {
     async function fetchFormConfig() {
-      if (!DEFAULT_EVENT_ID) {
-        setConfigError("Event ID is not configured");
+      if (!eventId) {
+        setConfigError(
+          "Event ID is not configured. Set NEXT_PUBLIC_EVENT_ID or provide ?eventId=<id>."
+        );
         setLoading(false);
         return;
       }
 
       try {
         setLoading(true);
-        console.log("📡 [FETCH CONFIG] Fetching form configuration for event:", DEFAULT_EVENT_ID);
-        const result = await getEventInfo(DEFAULT_EVENT_ID);
+        console.log("📡 [FETCH CONFIG] Fetching form configuration for event:", eventId);
+        const result = await getEventInfo(eventId);
 
         if (result.success && result.data.registrationFormConfig) {
           console.log(
@@ -103,7 +125,7 @@ export function useDynamicStepForm(): UseDynamicStepFormReturn {
     }
 
     fetchFormConfig();
-  }, []);
+  }, [eventId]);
 
   // Parse URL parameters for auto-fill functionality
   const parseUrlParams = useCallback(() => {
@@ -157,7 +179,6 @@ export function useDynamicStepForm(): UseDynamicStepFormReturn {
           const parsed = JSON.parse(savedData);
           initialValues = parsed.formValues || {};
           setCurrentStep(parsed.currentStep || 1);
-          setTermsAccepted(parsed.termsAccepted || false);
           console.log("💾 [FORM INIT] Loaded saved data from localStorage:", initialValues);
         } catch (error) {
           console.warn("⚠️ [FORM INIT] Failed to load saved form data:", error);
@@ -207,12 +228,11 @@ export function useDynamicStepForm(): UseDynamicStepFormReturn {
       const dataToSave = {
         formValues,
         currentStep,
-        termsAccepted,
         savedAt: new Date().toISOString()
       };
       localStorage.setItem(STORAGE_KEYS.REGISTRATION_DRAFT, JSON.stringify(dataToSave));
     }
-  }, [formValues, currentStep, termsAccepted]);
+  }, [formValues, currentStep]);
 
   // Clear conditional field values when parent condition changes
   useEffect(() => {
@@ -397,8 +417,14 @@ export function useDynamicStepForm(): UseDynamicStepFormReturn {
       setSubmitting(true);
       setApiError("");
 
+      if (!eventId) {
+        setApiError("Event configuration is missing. Please reload with a valid event link.");
+        setSubmitting(false);
+        return;
+      }
+
       const payload = buildPayload();
-      const result = await registerAttendee(DEFAULT_EVENT_ID!, payload);
+      const result = await registerAttendee(eventId, payload);
 
       if (result.success) {
         console.log("✅ Registration successful, preparing redirection...");
@@ -407,16 +433,27 @@ export function useDynamicStepForm(): UseDynamicStepFormReturn {
         const firstName =
           payload.formResponses.find((r) => r.fieldName === "firstName")?.value || "";
         const lastName = payload.formResponses.find((r) => r.fieldName === "lastName")?.value || "";
-        const phone =
-          payload.formResponses.find(
-            (r) => r.fieldName === "phone" || r.fieldName === "phoneNumber"
-          )?.value || "";
+        const phoneValue = payload.formResponses.find(
+          (r) => r.fieldName === "phone" || r.fieldName === "phoneNumber"
+        )?.value;
+        const phone = typeof phoneValue === "string" ? phoneValue : String(phoneValue || "");
 
         const profile = {
           email: payload.email,
           fullName: `${firstName} ${lastName}`.trim(),
           phone: phone
         };
+
+        const confirmationPayload: RegistrationConfirmationPayload = {
+          ...profile,
+          attendeeId: result.data.id,
+          wallet: result.data.wallet || null,
+          checkIn: result.data.checkIn || null
+        };
+
+        Cookies.set("register_confirmation", JSON.stringify(confirmationPayload), {
+          sameSite: "Lax"
+        });
         Cookies.set("register_profile", JSON.stringify(profile));
 
         // Clear saved draft data on successful submission
@@ -447,7 +484,7 @@ export function useDynamicStepForm(): UseDynamicStepFormReturn {
       setApiError("Something went wrong. Please try again.");
       setSubmitting(false);
     }
-  }, [buildPayload]);
+  }, [buildPayload, eventId]);
 
   const validateCurrentStep = useCallback(() => {
     if (!currentStepData) return false;
@@ -605,7 +642,9 @@ export function useDynamicStepForm(): UseDynamicStepFormReturn {
 
     if (currentStep === totalSteps) {
       if (submitting) return;
-      void handleSubmit();
+      if (validateCurrentStep()) {
+        void handleSubmit();
+      }
       return;
     }
 
@@ -626,7 +665,6 @@ export function useDynamicStepForm(): UseDynamicStepFormReturn {
     setIsSubmitted(false);
     setCurrentStep(1);
     setFormValues({});
-    setTermsAccepted(false);
     setFieldErrors({});
     setApiError("");
 
@@ -636,13 +674,13 @@ export function useDynamicStepForm(): UseDynamicStepFormReturn {
   }, []);
 
   return {
+    eventId,
     currentStep,
     totalSteps,
     currentStepData,
     formValues,
     fieldErrors,
     isSubmitted,
-    termsAccepted,
     submitting,
     apiError,
     loading,
@@ -651,7 +689,6 @@ export function useDynamicStepForm(): UseDynamicStepFormReturn {
     handleSwitchChange,
     handleNext,
     handleBack,
-    setTermsAccepted,
     resetForm
   };
 }

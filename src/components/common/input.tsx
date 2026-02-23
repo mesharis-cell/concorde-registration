@@ -1,9 +1,8 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { chivasLoudBold, chivasLuxRegular } from "@/fonts";
+import { displayFontBold, bodyFontRegular } from "@/fonts";
 import { classNames } from "@/utils";
-import ReactIcon from "./react-icon";
 
 interface InputProps {
   id?: string;
@@ -39,11 +38,11 @@ const Input: React.FC<InputProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
 
   const sizeClasses = {
-    sm: "p-1.5 text-xs",
-    md: "p-1.5 text-sm",
-    lg: "px-3 py-2 text-base",
-    full: "w-full px-3 py-1.5 md:py-2 md:text-lg rounded-md",
-    default: "px-3 py-1.5 md:py-2 md:text-lg rounded-md"
+    sm: "p-2 text-sm",
+    md: "p-2.5 text-base",
+    lg: "px-4 py-3 text-base",
+    full: "w-full px-4 py-3 text-base rounded-lg",
+    default: "px-4 py-3 text-base rounded-lg"
   }[size];
 
   const inputClasses = classNames(sizeClasses, className);
@@ -90,7 +89,7 @@ const Input: React.FC<InputProps> = ({
       <div className="mb-1 ml-1 flex items-center space-x-2">
         <label
           htmlFor={id}
-          className={`block text-xs leading-5 font-medium tracking-[-0.6%] text-black/60 uppercase ${chivasLoudBold.className}`}
+          className={`block text-xs leading-5 font-medium tracking-[0.08em] text-white/80 ${displayFontBold.className}`}
         >
           {label}
         </label>
@@ -116,12 +115,12 @@ const Input: React.FC<InputProps> = ({
         step={type === "time" ? "3600" : undefined} // Force 24-hour format for time inputs
         pattern={type === "time" ? "[0-9]{2}:[0-9]{2}" : undefined} // 24-hour pattern
         className={classNames(
-          "rounded bg-[#D9D9D9] text-center text-[#878680] !shadow-[inset_0_5px_8px_rgba(0,0,0,0.25)] transition-all outline-none focus:!shadow-[inset_0_5px_8px_rgba(0,0,0,0.25)]",
+          "rounded-lg border border-white/10 bg-[#e9edf2] text-left text-[#1a1a1a] !shadow-[inset_0_1px_2px_rgba(0,0,0,0.16)] transition-all outline-none focus:border-[#d4a574] focus:!shadow-[inset_0_1px_2px_rgba(0,0,0,0.16)]",
           innerTextColor
             ? "text-[#E70909] placeholder:text-[#E70909]"
-            : "placeholder:text-[#878680]",
+            : "placeholder:text-[#677489]",
           disabled ? "cursor-not-allowed opacity-70" : "",
-          chivasLuxRegular.className,
+          bodyFontRegular.className,
           inputClasses
         )}
         aria-invalid={!!errorMessage}
@@ -131,7 +130,7 @@ const Input: React.FC<InputProps> = ({
       {errorMessage && (
         <div
           id={`${id}-error`}
-          className={`absolute -bottom-4 mt-1 flex w-full items-center justify-center gap-1 text-center text-[10px] text-red-100 bg-red-600/10 rounded-b-md uppercase sm:-bottom-5 ${chivasLoudBold.className}`}
+          className={`absolute -bottom-4 mt-1 flex w-full items-center justify-center gap-1 text-center text-[11px] text-red-100 sm:-bottom-5 ${displayFontBold.className}`}
         >
           {errorMessage}
         </div>

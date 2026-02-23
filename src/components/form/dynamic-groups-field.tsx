@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { classNames } from "@/utils";
-import { chivasLuxRegular } from "@/fonts";
+import { bodyFontRegular } from "@/fonts";
 import { getEventInfo } from "@/services/get-event";
 
 interface DynamicGroupsFieldProps {
@@ -66,17 +66,17 @@ export function DynamicGroupsField({
       <select
         className={classNames(
           "w-full rounded-md px-3 py-1.5 md:py-2 md:text-lg",
-          "rounded bg-[#D9D9D9] text-center text-[#878680] !shadow-[inset_0_5px_8px_rgba(0,0,0,0.25)]",
+          "rounded bg-[#e2e8f0] text-center text-[#64748b] !shadow-[inset_0_5px_8px_rgba(0,0,0,0.25)]",
           "transition-all outline-none focus:!shadow-[inset_0_5px_8px_rgba(0,0,0,0.25)]",
           "cursor-pointer appearance-none",
-          chivasLuxRegular.className
+          bodyFontRegular.className
         )}
         value={value || ""}
         required={required}
         onChange={(e) => onChange(e.target.value)}
         disabled={loading}
       >
-        <option value="" className="text-[#878680]">
+        <option value="" className="text-[#64748b]">
           {placeholder}
         </option>
         {groupOptions.map((option) => (

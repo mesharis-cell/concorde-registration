@@ -30,6 +30,16 @@ export interface RegistrationSuccess {
     email: string;
     assigned: boolean;
     eventId: string;
+    wallet?: {
+      googleWalletUrl: string;
+      passReferenceId: string;
+      expiresAt: string;
+    };
+    checkIn?: {
+      qrPayloadUrl: string;
+      token: string;
+      expiresAt: string;
+    };
   };
   message?: string;
 }
@@ -46,11 +56,56 @@ export type RegistrationResponse = RegistrationSuccess | RegistrationError;
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3001";
 const API_VERSION = "v1";
 const PUBLIC_API_PREFIX = `/api/${API_VERSION}/public`;
+const EVENT_ID_QUERY_KEYS = ["eventId", "event_id", "event", "id"] as const;
 
 export const API_BASE_URL_WITH_PREFIX = `${API_BASE_URL}${PUBLIC_API_PREFIX}`;
-export const DEFAULT_EVENT_ID = process.env.NEXT_PUBLIC_EVENT_ID;
+export const DEFAULT_EVENT_ID = process.env.NEXT_PUBLIC_EVENT_ID?.trim() || "";
 
-if (!DEFAULT_EVENT_ID) throw new Error("DEFAULT_EVENT_ID is not set");
+type SearchParamsLike = {
+  get: (name: string) => string | null;
+};
+
+function getEventIdFromSearchParams(searchParams?: SearchParamsLike | null): string | null {
+  if (!searchParams) return null;
+
+  for (const key of EVENT_ID_QUERY_KEYS) {
+    const value = searchParams.get(key)?.trim();
+    if (value) return value;
+  }
+
+  return null;
+}
+
+export function resolveEventIdFromClientSearchParams(
+  searchParams?: SearchParamsLike | null
+): string | null {
+  if (DEFAULT_EVENT_ID) return DEFAULT_EVENT_ID;
+
+  const fromHookParams = getEventIdFromSearchParams(searchParams);
+  if (fromHookParams) return fromHookParams;
+
+  if (typeof window === "undefined") return null;
+
+  const fromUrl = getEventIdFromSearchParams(new URLSearchParams(window.location.search));
+  if (fromUrl) return fromUrl;
+
+  const storedParams = sessionStorage.getItem("registration_url_params");
+  if (!storedParams) return null;
+
+  try {
+    const parsed = JSON.parse(storedParams) as Record<string, unknown>;
+    for (const key of EVENT_ID_QUERY_KEYS) {
+      const value = parsed[key];
+      if (typeof value === "string" && value.trim()) {
+        return value.trim();
+      }
+    }
+  } catch {
+    // Ignore malformed session payload and continue with null.
+  }
+
+  return null;
+}
 
 export async function registerAttendee(
   eventId: string,

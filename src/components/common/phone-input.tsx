@@ -3,7 +3,7 @@
 import React from "react";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
-import { chivasLuxRegular, chivasLoudBold } from "@/fonts";
+import { bodyFontRegular, displayFontBold } from "@/fonts";
 import { classNames } from "@/utils";
 import ReactIcon from "./react-icon";
 
@@ -48,7 +48,7 @@ const PhoneInputComponent: React.FC<PhoneInputComponentProps> = ({
           placeholder={placeholder}
           className={classNames(
             "phone-input-custom",
-            chivasLuxRegular.className,
+            bodyFontRegular.className,
             error ? "phone-input-error" : ""
           )}
         />
@@ -57,7 +57,7 @@ const PhoneInputComponent: React.FC<PhoneInputComponentProps> = ({
       {/* Error Message Display */}
       {errorMessage && (
         <div
-          className={`absolute -bottom-4 mt-1 flex w-full items-center justify-center gap-1 text-center text-[10px] text-red-400 uppercase sm:-bottom-5 ${chivasLoudBold.className}`}
+          className={`absolute -bottom-4 mt-1 flex w-full items-center justify-center gap-1 text-center text-[10px] text-red-400 uppercase sm:-bottom-5 ${displayFontBold.className}`}
         >
           <ReactIcon icon="RiErrorWarningLine" className="size-3 -translate-y-[0.5px]" />
           {errorMessage}
@@ -78,7 +78,7 @@ const PhoneInputComponent: React.FC<PhoneInputComponentProps> = ({
           border: none;
           outline: none;
           background: #d9d9d9;
-          color: #878680;
+          color: #64748b;
           padding: 0.375rem 0.75rem;
           border-radius: 0.375rem;
           font-size: 1rem;
@@ -91,7 +91,7 @@ const PhoneInputComponent: React.FC<PhoneInputComponentProps> = ({
         }
 
         .phone-input-custom .PhoneInputInput::placeholder {
-          color: #878680;
+          color: #64748b;
           opacity: 0.7;
         }
 
@@ -113,11 +113,11 @@ const PhoneInputComponent: React.FC<PhoneInputComponentProps> = ({
           background: transparent;
           cursor: pointer;
           font-size: 0.875rem;
-          color: #878680;
+          color: #64748b;
         }
 
         .phone-input-custom .PhoneInputCountrySelect:focus {
-          outline: 2px solid #c69143;
+          outline: 2px solid #b88d3d;
           outline-offset: 2px;
           border-radius: 0.25rem;
         }

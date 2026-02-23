@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { chivasLuxRegular, chivasLoudBold } from "@/fonts";
+import { bodyFontRegular, displayFontBold } from "@/fonts";
 import { classNames } from "@/utils";
 import ReactIcon from "./react-icon";
 
@@ -89,10 +89,10 @@ const TimePicker24H: React.FC<TimePicker24HProps> = ({
 
   const baseSelectClasses = classNames(
     "w-full rounded-md px-3 py-1.5 md:py-2 md:text-lg",
-    "rounded bg-[#D9D9D9] text-center text-[#878680] !shadow-[inset_0_5px_8px_rgba(0,0,0,0.25)]",
+    "rounded bg-[#e2e8f0] text-center text-[#64748b] !shadow-[inset_0_5px_8px_rgba(0,0,0,0.25)]",
     "transition-all outline-none focus:!shadow-[inset_0_5px_8px_rgba(0,0,0,0.25)]",
     "cursor-pointer appearance-none",
-    chivasLuxRegular.className,
+    bodyFontRegular.className,
     disabled ? "cursor-not-allowed opacity-70" : ""
   );
 
@@ -108,7 +108,7 @@ const TimePicker24H: React.FC<TimePicker24HProps> = ({
             disabled={disabled}
             required={required}
           >
-            <option value="" className="text-[#878680]">
+            <option value="" className="text-[#64748b]">
               HH
             </option>
             {hourOptions.map((option) => (
@@ -121,7 +121,7 @@ const TimePicker24H: React.FC<TimePicker24HProps> = ({
 
         {/* Separator */}
         <div className="flex items-center justify-center px-2">
-          <span className={classNames("text-lg text-[#878680]", chivasLuxRegular.className)}>
+          <span className={classNames("text-lg text-[#64748b]", bodyFontRegular.className)}>
             :
           </span>
         </div>
@@ -135,7 +135,7 @@ const TimePicker24H: React.FC<TimePicker24HProps> = ({
             disabled={disabled}
             required={required}
           >
-            <option value="" className="text-[#878680]">
+            <option value="" className="text-[#64748b]">
               MM
             </option>
             {minuteOptions.map((option) => (
@@ -150,7 +150,7 @@ const TimePicker24H: React.FC<TimePicker24HProps> = ({
       {/* Error Message Display */}
       {errorMessage && (
         <div
-          className={`absolute -bottom-4 mt-1 flex w-full items-center justify-center gap-1 text-center text-[10px] text-red-400 uppercase sm:-bottom-5 ${chivasLoudBold.className}`}
+          className={`absolute -bottom-4 mt-1 flex w-full items-center justify-center gap-1 text-center text-[10px] text-red-400 uppercase sm:-bottom-5 ${displayFontBold.className}`}
         >
           <ReactIcon icon="RiErrorWarningLine" className="size-3 -translate-y-[0.5px]" />
           {errorMessage}

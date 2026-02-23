@@ -6,7 +6,7 @@ import { CalendarIcon } from "@radix-ui/react-icons";
 import { DayPicker } from "react-day-picker";
 import * as Popover from "@radix-ui/react-popover";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
-import { chivasLuxRegular, chivasLoudBold } from "@/fonts";
+import { bodyFontRegular, displayFontBold } from "@/fonts";
 import { classNames } from "@/utils";
 import ReactIcon from "./react-icon";
 
@@ -85,15 +85,15 @@ const EnhancedDateTimePicker: React.FC<DateTimePickerProps> = ({
             disabled={disabled}
             className={classNames(
               "w-full rounded-md px-3 py-1.5 md:py-2 md:text-lg",
-              "rounded bg-[#D9D9D9] text-center !text-[#878680] !shadow-[inset_0_5px_8px_rgba(0,0,0,0.25)]",
+              "rounded bg-[#e2e8f0] text-center !text-[#64748b] !shadow-[inset_0_5px_8px_rgba(0,0,0,0.25)]",
               "transition-all outline-none focus:!shadow-[inset_0_5px_8px_rgba(0,0,0,0.25)]",
               "flex cursor-pointer appearance-none items-center justify-between",
-              chivasLuxRegular.className,
+              bodyFontRegular.className,
               disabled ? "cursor-not-allowed opacity-70" : ""
             )}
           >
             {dateValue ? (
-              <span className="w-full self-center text-center !text-[#878680]">
+              <span className="w-full self-center text-center !text-[#64748b]">
                 {format(dateValue, getFormatPattern(dateFormat))}
               </span>
             ) : (
@@ -137,7 +137,7 @@ const EnhancedDateTimePicker: React.FC<DateTimePickerProps> = ({
                   cell: "text-center text-sm p-0 relative focus-within:relative focus-within:z-20",
                   day: "h-8 w-8 p-0 font-normal hover:bg-gray-100 rounded-md transition-colors",
                   day_selected:
-                    "bg-[#C69143] text-white hover:bg-[#B8834A] focus:bg-[#C69143] focus:text-white",
+                    "bg-[#d4a574] text-white hover:bg-[#b88d3d] focus:bg-[#d4a574] focus:text-white",
                   day_today: "bg-gray-100 text-gray-900 font-semibold",
                   day_outside: "text-gray-400 opacity-50",
                   day_disabled: "text-gray-400 opacity-50"
@@ -159,7 +159,7 @@ const EnhancedDateTimePicker: React.FC<DateTimePickerProps> = ({
                           className={classNames(
                             "h-8 w-full rounded-md text-center text-sm transition-colors",
                             dateValue && dateValue.getHours() === hour
-                              ? "bg-[#C69143] text-white"
+                              ? "bg-[#d4a574] text-white"
                               : "text-gray-700 hover:bg-gray-100"
                           )}
                           onClick={() => handleTimeChange("hour", hour)}
@@ -187,7 +187,7 @@ const EnhancedDateTimePicker: React.FC<DateTimePickerProps> = ({
                           className={classNames(
                             "h-8 w-full rounded-md text-center text-sm transition-colors",
                             dateValue && dateValue.getMinutes() === minute
-                              ? "bg-[#C69143] text-white"
+                              ? "bg-[#d4a574] text-white"
                               : "text-gray-700 hover:bg-gray-100"
                           )}
                           onClick={() => handleTimeChange("minute", minute)}
@@ -210,7 +210,7 @@ const EnhancedDateTimePicker: React.FC<DateTimePickerProps> = ({
       {/* Error Message Display */}
       {errorMessage && (
         <div
-          className={`absolute -bottom-4 mt-1 flex w-full items-center justify-center gap-1 text-center text-[10px] text-black uppercase sm:-bottom-5 ${chivasLoudBold.className}`}
+          className={`absolute -bottom-4 mt-1 flex w-full items-center justify-center gap-1 text-center text-[10px] text-black uppercase sm:-bottom-5 ${displayFontBold.className}`}
         >
           <ReactIcon icon="RiErrorWarningLine" className="size-3 -translate-y-[0.5px]" />
           {errorMessage}

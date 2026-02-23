@@ -546,13 +546,6 @@ export const formData: FormData = {
         required: false,
         name: "emergencyContactEmail",
         textColor: true
-      },
-      {
-        type: "checkbox",
-        text: "I agree to the terms & conditions and privacy policy",
-        required: true,
-        name: "termsAccepted",
-        value: false
       }
     ]
   }

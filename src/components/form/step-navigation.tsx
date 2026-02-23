@@ -1,11 +1,9 @@
 import React from "react";
 import Button from "@/components/common/button";
-import { FormValues } from "@/types/registration";
 
 interface StepNavigationProps {
   currentStep: number;
   totalSteps: number;
-  formValues: FormValues;
   submitting: boolean;
   onNext: () => void;
   onBack: () => void;
@@ -14,7 +12,6 @@ interface StepNavigationProps {
 export function StepNavigation({
   currentStep,
   totalSteps,
-  formValues,
   submitting,
   onNext,
   onBack
@@ -30,33 +27,33 @@ export function StepNavigation({
     >
       {showBackButton && (
         <Button size="lg" className="px-7" onClick={onBack}>
-          BACK
+          Back
         </Button>
       )}
 
       {isFirstStep ? (
         <Button onClick={onNext} size="xl" className="px-14 sm:px-24">
-          NEXT
+          Next
         </Button>
       ) : isLastStep ? (
         <Button
           size="lg"
           className="px-7"
           onClick={onNext}
-          disabled={!formValues.termsAccepted || submitting}
+          disabled={submitting}
         >
           {submitting ? (
             <div className="flex items-center space-x-2">
               <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
-              <span>SUBMITTING...</span>
+              <span>Submitting...</span>
             </div>
           ) : (
-            "SUBMIT"
+            "Submit"
           )}
         </Button>
       ) : (
         <Button size="lg" className="px-7" onClick={onNext}>
-          NEXT
+          Next
         </Button>
       )}
     </div>

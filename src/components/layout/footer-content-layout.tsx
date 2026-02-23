@@ -3,7 +3,7 @@
 import React from "react";
 import Footer from "../common/footer";
 import MicroLogo from "../common/logo";
-import { chivasLuxRegular } from "@/fonts";
+import { bodyFontRegular } from "@/fonts";
 import Container from "../reusable/container";
 import { ChildrenProps } from "@/types";
 import Button from "../common/button";
@@ -26,7 +26,7 @@ const FooterContentLayout: React.FC<FooterContentLayoutProps> = ({ children, sub
             ← BACK
           </Button>
           <h1
-            className={`pt-3 text-lg font-medium text-white uppercase md:px-10 md:text-2xl ${chivasLuxRegular.className}`}
+            className={`pt-3 text-lg font-medium text-white uppercase md:px-10 md:text-2xl ${bodyFontRegular.className}`}
           >
             {subtitle}
           </h1>

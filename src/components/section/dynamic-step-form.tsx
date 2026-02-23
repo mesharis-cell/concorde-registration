@@ -11,13 +11,13 @@ import { WHATSAPP_NUMBER } from "@/constants";
 
 function DynamicStepForm() {
   const {
+    eventId,
     currentStep,
     totalSteps,
     currentStepData,
     formValues,
     fieldErrors,
     isSubmitted,
-    termsAccepted,
     submitting,
     apiError,
     loading,
@@ -26,7 +26,6 @@ function DynamicStepForm() {
     handleSwitchChange,
     handleNext,
     handleBack,
-    setTermsAccepted,
     resetForm
   } = useDynamicStepForm();
 
@@ -37,9 +36,9 @@ function DynamicStepForm() {
   if (loading)
     return (
       <Container grain>
-        <FormLayout subtitle="LOADING REGISTRATION FORM">
+        <FormLayout subtitle="Loading registration form">
           <div className="flex flex-col items-center justify-center py-20">
-            <div className="h-12 w-12 animate-spin rounded-full border-4 border-[#C69143] border-t-transparent"></div>
+            <div className="h-12 w-12 animate-spin rounded-full border-4 border-[#d4a574] border-t-transparent"></div>
             <p className="mt-4 text-white">Loading form configuration...</p>
           </div>
         </FormLayout>
@@ -53,18 +52,18 @@ function DynamicStepForm() {
   if (configError || !currentStepData)
     return (
       <Container grain>
-        <FormLayout subtitle="REGISTRATION UNAVAILABLE">
+        <FormLayout subtitle="Registration unavailable">
           <div className="flex flex-col items-center justify-center px-6 py-20 text-white">
             <div>
-              <p className="mt-4 text-center font-bold uppercase">
+              <p className="mt-4 text-center text-lg font-semibold">
                 Unable to load registration form
               </p>
-              <p className="mt-2 text-center text-sm text-gray-300 uppercase">
+              <p className="mt-2 text-center text-sm text-gray-300">
                 {configError || "Form configuration is not available"}
               </p>
             </div>
 
-            <Button size="xl" className="mt-6 uppercase" onClick={() => window.location.reload()}>
+            <Button size="xl" className="mt-6" onClick={() => window.location.reload()}>
               Retry
             </Button>
             <div className="mt-4">
@@ -81,7 +80,7 @@ function DynamicStepForm() {
                     fill="white"
                   />
                 </svg>
-                <span className="pb-0.5 text-xs uppercase">Help Line</span>
+                <span className="pb-0.5 text-xs">Help line</span>
               </a>
             </div>
           </div>
@@ -91,13 +90,13 @@ function DynamicStepForm() {
 
   return (
     <Container grain>
-      <FormLayout subtitle="REGISTER YOUR INFORMATION HERE">
+      <FormLayout subtitle="Register your information">
         {/* Loading Overlay during submission */}
         {submitting && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
             <div className="flex flex-col items-center space-y-4 rounded-lg bg-white p-8">
-              <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#C69143] border-t-transparent"></div>
-              <p className="font-semibold text-[#C69143]">Submitting your registration...</p>
+              <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#d4a574] border-t-transparent"></div>
+              <p className="font-semibold text-[#d4a574]">Submitting your registration...</p>
               <p className="text-center text-sm text-gray-600">Please do not close this window</p>
             </div>
           </div>
@@ -107,14 +106,14 @@ function DynamicStepForm() {
         {apiError && (
           <div className="mb-6 rounded-md border bg-black/40 px-3 py-1.5 text-xs">
             <div className="flex flex-col items-start">
-              <h3 className="font-medium text-red-300 uppercase">Registration Error</h3>
-              <div className="mt-1 text-red-50 uppercase">{apiError}</div>
+              <h3 className="font-medium text-red-300">Registration error</h3>
+              <div className="mt-1 text-red-50">{apiError}</div>
             </div>
           </div>
         )}
 
         <div
-          className={`mb-12 w-full space-y-3 sm:mt-4 sm:mb-20 sm:space-y-5 md:px-14 ${submitting ? "pointer-events-none opacity-75" : ""}`}
+          className={`mb-10 w-full space-y-4 sm:mt-2 sm:mb-14 sm:space-y-6 md:px-10 ${submitting ? "pointer-events-none opacity-75" : ""}`}
         >
           <StepHeader
             label={currentStepData?.label}
@@ -145,7 +144,7 @@ function DynamicStepForm() {
               });
 
               return (
-                <div key={field.name || index} className="dynamic-field-uppercase">
+                <div key={field.name || index}>
                   <DynamicStepField
                     field={field}
                     index={index}
@@ -154,6 +153,7 @@ function DynamicStepForm() {
                     onInputChange={handleInputChange}
                     onSwitchChange={handleSwitchChange}
                     formValues={formValues}
+                    eventId={eventId}
                   />
                 </div>
               );
@@ -163,7 +163,6 @@ function DynamicStepForm() {
           <StepNavigation
             currentStep={currentStep}
             totalSteps={totalSteps}
-            formValues={formValues}
             submitting={submitting}
             onNext={handleNext}
             onBack={handleBack}

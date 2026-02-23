@@ -1,5 +1,5 @@
 import React from "react";
-import { chivasLoudBold, chivasLuxRegular } from "@/fonts";
+import { displayFontBold, bodyFontRegular } from "@/fonts";
 import { classNames } from "@/utils";
 import Button from "@/components/common/button";
 import { formData, FormField } from "@/utils/form-data";
@@ -23,8 +23,8 @@ export function RegistrationSummary({ formValues, onReset }: RegistrationSummary
     <div className="mb-20 w-full rounded-lg bg-white p-6 shadow-lg">
       <h2
         className={classNames(
-          "mb-6 text-center text-2xl font-bold text-[#A08447]",
-          chivasLoudBold.className
+          "mb-6 text-center text-2xl font-bold text-[#b88d3d]",
+          displayFontBold.className
         )}
       >
         REGISTRATION COMPLETED
@@ -35,8 +35,8 @@ export function RegistrationSummary({ formValues, onReset }: RegistrationSummary
           <div key={stepKey} className="border-b border-gray-200 pb-4">
             <h3
               className={classNames(
-                "mb-3 text-lg font-semibold text-[#A08447] uppercase",
-                chivasLoudBold.className
+                "mb-3 text-lg font-semibold text-[#b88d3d] uppercase",
+                displayFontBold.className
               )}
             >
               {stepLabels[stepKey as keyof typeof stepLabels]}
@@ -48,13 +48,13 @@ export function RegistrationSummary({ formValues, onReset }: RegistrationSummary
                 if (field.type === "switch") {
                   return (
                     <div key={index} className="flex items-center justify-between">
-                      <span className={classNames("text-gray-700", chivasLuxRegular.className)}>
+                      <span className={classNames("text-gray-700", bodyFontRegular.className)}>
                         {field.text}:
                       </span>
                       <span
                         className={classNames(
                           "font-semibold",
-                          chivasLoudBold.className,
+                          displayFontBold.className,
                           value ? "text-green-600" : "text-red-600"
                         )}
                       >
@@ -67,14 +67,14 @@ export function RegistrationSummary({ formValues, onReset }: RegistrationSummary
                 return (
                   <div key={index}>
                     <span
-                      className={classNames("mb-1 block text-gray-700", chivasLuxRegular.className)}
+                      className={classNames("mb-1 block text-gray-700", bodyFontRegular.className)}
                     >
                       {field.placeholder}:
                     </span>
                     <span
                       className={classNames(
                         "font-semibold text-gray-900",
-                        chivasLoudBold.className
+                        displayFontBold.className
                       )}
                     >
                       {String(value || "Not provided")}
@@ -88,7 +88,7 @@ export function RegistrationSummary({ formValues, onReset }: RegistrationSummary
       </div>
 
       <div className="mt-8 text-center">
-        <Button onClick={onReset} className="bg-[#A08447] text-white hover:bg-[#8B6F3A]">
+        <Button onClick={onReset} className="bg-[#b88d3d] text-white hover:bg-[#8f6427]">
           START NEW REGISTRATION
         </Button>
       </div>

@@ -1,28 +1,33 @@
 {
-    "name": "Chivas Regal Abu Dhabi - Event Companion",
-    "short_name": "Chivas Abu Dhabi",
-    "description": "Your personalized itinerary for Chivas Regal Abu Dhabi 2025",
+    "name": "Savvio Concorde Registration",
+    "short_name": "Savvio Concorde",
+    "description": "Savvio Concorde attendee registration and check-in pass access.",
     "start_url": "/",
     "display": "standalone",
-    "background_color": "#b88d3d",
-    "theme_color": "#b88d3d",
+    "background_color": "#111111",
+    "theme_color": "#111111",
     "orientation": "portrait",
     "icons": [
         {
-            "src": "/android-chrome-192x192.png",
-            "sizes": "192x192",
+            "src": "/logo-S-white.png",
+            "sizes": "558x558",
             "type": "image/png"
         },
         {
-            "src": "/android-chrome-512x512.png",
-            "sizes": "512x512",
+            "src": "/logo-S-white@2x.png",
+            "sizes": "1116x1116",
+            "type": "image/png"
+        },
+        {
+            "src": "/logo-S-white@3x.png",
+            "sizes": "1674x1674",
             "type": "image/png"
         }
     ],
     "categories": [
-        "lifestyle",
-        "travel",
-        "events"
+        "events",
+        "business",
+        "productivity"
     ],
     "lang": "en",
     "scope": "/"

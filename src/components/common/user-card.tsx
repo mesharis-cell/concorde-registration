@@ -1,11 +1,10 @@
 import React from "react";
 import {
-    chivasLuxSemiBold,
-    chivasLoudBold,
-    chivasLuxRegular,
-    chivasLoudExtraBoldItalic
+    bodyFontSemiBold,
+    displayFontBold,
+    bodyFontRegular,
+    displayFontExtraBoldItalic
 } from "@/fonts";
-import Image from "next/image";
 import Link from "next/link";
 
 interface UserCardProps {
@@ -21,7 +20,7 @@ function UserCard({ name, email, number, link, linkText, isLoading }: UserCardPr
     return (
         <div className="flex w-full flex-col items-center justify-center">
             <div className="relative h-[160px] w-[296px] overflow-hidden rounded-xl shadow-lg">
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-[#C69143] via-[#E9CB8A] to-[#B68B39]" />
+                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-[#FFE0C2] via-[#d4a574] to-[#b88d3d]" />
 
                 {isLoading ? (
                     <div className="flex h-full w-full items-center justify-center">
@@ -31,23 +30,23 @@ function UserCard({ name, email, number, link, linkText, isLoading }: UserCardPr
                     <div className="relative flex h-full flex-col justify-between p-3">
                         <div className="flex items-start justify-between">
                             <div className="flex flex-col text-[#000000]">
-                                <div className={`pt-2 text-[9px] tracking-wide ${chivasLuxSemiBold.className} `}>
+                                <div className={`pt-2 text-[9px] tracking-wide ${bodyFontSemiBold.className} `}>
                                     WELCOME
                                 </div>
-                                <div className={`mb-2 text-xl font-bold ${chivasLuxRegular.className}`}>{name}</div>
-                                <div className={`text-[9px] tracking-wide ${chivasLuxRegular.className}`}>
+                                <div className={`mb-2 text-xl font-bold ${bodyFontRegular.className}`}>{name}</div>
+                                <div className={`text-[9px] tracking-wide ${bodyFontRegular.className}`}>
                                     EMAIL
                                 </div>
                                 <div
-                                    className={`mb-2 text-xs font-normal tracking-wide ${chivasLoudExtraBoldItalic.className}`}
+                                    className={`mb-2 text-xs font-normal tracking-wide ${displayFontExtraBoldItalic.className}`}
                                 >
                                     {email}
                                 </div>
-                                <div className={`text-[9px] tracking-wide ${chivasLuxRegular.className}`}>
+                                <div className={`text-[9px] tracking-wide ${bodyFontRegular.className}`}>
                                     CONTACT NUMBER
                                 </div>
                                 <div
-                                    className={`mb-2 truncate text-xs font-normal tracking-wide ${chivasLoudExtraBoldItalic.className}`}
+                                    className={`mb-2 truncate text-xs font-normal tracking-wide ${displayFontExtraBoldItalic.className}`}
                                 >
                                     {number}
                                 </div>
@@ -56,20 +55,14 @@ function UserCard({ name, email, number, link, linkText, isLoading }: UserCardPr
                             {link && (
                                 <Link
                                     href={link}
-                                    className={`text-[8px] tracking-wide text-[#A08447] ${chivasLoudBold.className} `}
+                                    className={`text-[8px] tracking-wide text-[#b88d3d] ${displayFontBold.className} `}
                                 >
                                     {linkText}
                                 </Link>
                             )}
 
-                            <div className="absolute right-0 bottom-0 p-4">
-                                <Image
-                                    src={"/assets/stats-dark.svg"}
-                                    width={133}
-                                    height={20}
-                                    alt="microsite logo"
-                                    priority={true}
-                                />
+                            <div className="absolute right-0 bottom-0 p-4 text-[8px] tracking-wide text-black/60">
+                                SAVVIO CONCORDE
                             </div>
                         </div>
                     </div>

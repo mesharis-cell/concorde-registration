@@ -1,6 +1,6 @@
 import React from "react";
 import { Footer, MicroLogo, ReactIcon } from "@/components";
-import { chivasLuxRegular } from "@/fonts";
+import { bodyFontRegular } from "@/fonts";
 import { ChildrenProps } from "@/types";
 import { classNames } from "@/utils";
 import Link from "next/link";
@@ -25,7 +25,7 @@ const FormLayout: React.FC<FormLayoutProps> = ({
         <MicroLogo dark={dark} />
         <div className="flex items-center justify-center">
           {backIcon && (
-            <Link href="/itinerary" className="absolute left-0 translate-y-[8px] gap-2 text-black">
+            <Link href="/" className="absolute left-0 translate-y-[8px] gap-2 text-white">
               <ReactIcon icon="HiArrowLeft" className="size-5" />
             </Link>
           )}
@@ -33,9 +33,9 @@ const FormLayout: React.FC<FormLayoutProps> = ({
           <h1
             className={classNames(
               className,
-              chivasLuxRegular.className,
+              bodyFontRegular.className,
               dark ? "text-[#000000]" : "text-white",
-              "py-7 text-center text-xl font-medium uppercase md:px-10 md:text-2xl"
+              "py-6 text-center text-2xl leading-tight font-semibold md:px-10 md:text-3xl"
             )}
           >
             {subtitle}

@@ -1,5 +1,5 @@
 import React from "react";
-import { chivasLoudBold, chivasLuxRegular } from "@/fonts";
+import { displayFontBold, bodyFontRegular } from "@/fonts";
 import { classNames } from "@/utils";
 import Input from "@/components/common/input";
 import Textarea from "@/components/common/textarea";
@@ -11,7 +11,6 @@ import { DynamicHotelField } from "./dynamic-hotel-field";
 import { DynamicGroupsField } from "./dynamic-groups-field";
 import type { FormFieldConfig } from "@/services/get-event";
 import { evaluateConditional } from "@/hooks/use-dynamic-step-form";
-import ReactIcon from "../common/react-icon";
 
 interface DynamicStepFieldProps {
   field: FormFieldConfig;
@@ -21,6 +20,21 @@ interface DynamicStepFieldProps {
   onInputChange: (name: string, value: string | boolean) => void;
   onSwitchChange: (name: string) => void;
   formValues: Record<string, string | boolean>;
+  eventId?: string | null;
+}
+
+function normalizeDynamicText(value?: string): string {
+  if (!value) return "";
+  const trimmed = value.trim();
+  if (!trimmed) return "";
+
+  if (/<[^>]+>/.test(trimmed)) return trimmed;
+
+  const letters = trimmed.replace(/[^A-Za-z]/g, "");
+  const isAllCaps = letters.length > 3 && letters === letters.toUpperCase();
+  if (!isAllCaps) return trimmed;
+
+  return trimmed.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
 export function DynamicStepField({
@@ -30,8 +44,14 @@ export function DynamicStepField({
   error,
   onInputChange,
   onSwitchChange,
-  formValues
+  formValues,
+  eventId
 }: DynamicStepFieldProps) {
+  const resolvedEventId = eventId || process.env.NEXT_PUBLIC_EVENT_ID || "";
+  const normalizedLabel = normalizeDynamicText(field.label);
+  const normalizedHelperText = normalizeDynamicText(field.helperText);
+  const normalizedPlaceholder = normalizeDynamicText(field.placeholder);
+
   // Check conditional logic
   if (field.conditional) {
     const shouldShow = evaluateConditional(field.conditional, formValues);
@@ -41,26 +61,26 @@ export function DynamicStepField({
   // Switch/Toggle field
   if (field.type === "switch") {
     return (
-      <div key={index} className="mb-4 flex w-full items-center gap-2">
+      <div key={index} className="mb-4 flex w-full items-center justify-between gap-3">
         <div className="flex flex-col items-start">
           <span
             className={classNames(
-              "text-[13px] tracking-wide text-white uppercase",
-              chivasLoudBold.className
+              "text-base leading-tight text-white",
+              displayFontBold.className
             )}
-            dangerouslySetInnerHTML={{ __html: field.label }}
+            dangerouslySetInnerHTML={{ __html: normalizedLabel }}
           />
-          {field.helperText && (
+          {normalizedHelperText && (
             <p
-              className="mt-1 max-w-[75%] text-xs text-gray-300"
-              dangerouslySetInnerHTML={{ __html: field.helperText }}
+              className="mt-1 max-w-[78%] text-sm text-white/70"
+              dangerouslySetInnerHTML={{ __html: normalizedHelperText }}
             />
           )}
         </div>
         <Switch
           toggle={Boolean(value)}
-          toggleTextTrue="YES"
-          toggleTextFalse="NO"
+          toggleTextTrue="Yes"
+          toggleTextFalse="No"
           onClick={() => onSwitchChange(field.name || "")}
         />
       </div>
@@ -69,8 +89,16 @@ export function DynamicStepField({
 
   // Special handling for dynamic hotel field
   if (field.type === "dynamic-hotel-select" || field.name === "hotel") {
-    const eventId = process.env.NEXT_PUBLIC_EVENT_ID;
-    if (!eventId) throw new Error("Event ID not found");
+    if (!resolvedEventId) {
+      return (
+        <div
+          key={index}
+          className="rounded-md border border-red-400/40 bg-red-500/10 px-3 py-2 text-xs text-red-100 uppercase"
+        >
+          Event configuration is missing for this registration link.
+        </div>
+      );
+    }
 
     return (
       <DynamicHotelField
@@ -78,8 +106,8 @@ export function DynamicStepField({
         value={String(value || "")}
         onChange={(newValue) => onInputChange(field.name || "", newValue)}
         error={error}
-        placeholder={field.placeholder || ""}
-        eventId={eventId}
+        placeholder={normalizedPlaceholder || ""}
+        eventId={resolvedEventId}
         required={field.required}
       />
     );
@@ -87,8 +115,16 @@ export function DynamicStepField({
 
   // Special handling for dynamic groups field
   if (field.type === "dynamic-groups-select" || field.name === "groupId") {
-    const eventId = process.env.NEXT_PUBLIC_EVENT_ID;
-    if (!eventId) throw new Error("Event ID not found");
+    if (!resolvedEventId) {
+      return (
+        <div
+          key={index}
+          className="rounded-md border border-red-400/40 bg-red-500/10 px-3 py-2 text-xs text-red-100 uppercase"
+        >
+          Event configuration is missing for this registration link.
+        </div>
+      );
+    }
 
     return (
       <DynamicGroupsField
@@ -96,8 +132,8 @@ export function DynamicStepField({
         value={String(value || "")}
         onChange={(newValue) => onInputChange(field.name || "", newValue)}
         error={error}
-        placeholder={field.placeholder || ""}
-        eventId={eventId}
+        placeholder={normalizedPlaceholder || ""}
+        eventId={resolvedEventId}
         required={field.required}
       />
     );
@@ -109,20 +145,20 @@ export function DynamicStepField({
       <div key={index} className="relative mb-4 flex w-full flex-col items-start">
         <select
           className={classNames(
-            "w-full rounded-md px-3 py-1.5 md:py-2 md:text-lg",
-            "rounded bg-[#D9D9D9] text-center text-[#878680] !shadow-[inset_0_5px_8px_rgba(0,0,0,0.25)]",
-            "transition-all outline-none focus:!shadow-[inset_0_5px_8px_rgba(0,0,0,0.25)]",
+            "w-full rounded-lg border border-white/10 px-4 py-3 text-base",
+            "bg-[#e9edf2] text-left text-[#1a1a1a] !shadow-[inset_0_1px_2px_rgba(0,0,0,0.16)]",
+            "transition-all outline-none focus:border-[#d4a574] focus:!shadow-[inset_0_1px_2px_rgba(0,0,0,0.16)]",
             "cursor-pointer appearance-none",
-            chivasLuxRegular.className,
+            bodyFontRegular.className,
             error ? "border-2 border-red-400" : ""
           )}
           value={String(value || "")}
           required={field.required}
           onChange={(e) => onInputChange(field.name || "", e.target.value)}
         >
-          {field.placeholder && (
-            <option value="" className="text-[#878680]">
-              {field.placeholder}
+          {normalizedPlaceholder && (
+            <option value="" className="text-[#64748b]">
+              {normalizedPlaceholder}
             </option>
           )}
           {field.options?.map((option) => (
@@ -137,13 +173,13 @@ export function DynamicStepField({
           ))}
         </select>
         {error && field.required ? (
-          <div className="absolute -bottom-4 mt-1 flex w-full items-center justify-center gap-1 rounded-b-md bg-red-600/10 text-center text-[10px] text-red-100 uppercase sm:-bottom-5">
-            <span dangerouslySetInnerHTML={{ __html: `${field.label} is required` }} />
+          <div className="absolute -bottom-4 mt-1 flex w-full items-center justify-center gap-1 text-center text-[11px] text-red-200 sm:-bottom-5">
+            <span dangerouslySetInnerHTML={{ __html: `${normalizedLabel} is required` }} />
           </div>
-        ) : field.helperText ? (
+        ) : normalizedHelperText ? (
           <p
-            className="mt-1 text-xs text-gray-300"
-            dangerouslySetInnerHTML={{ __html: field.helperText }}
+            className="mt-1 text-sm text-white/70"
+            dangerouslySetInnerHTML={{ __html: normalizedHelperText }}
           />
         ) : null}
       </div>
@@ -156,10 +192,10 @@ export function DynamicStepField({
       <div key={index} className="mb-4">
         <label
           className={classNames(
-            "mb-3 block text-sm font-bold text-white uppercase",
-            chivasLoudBold.className
+            "mb-3 block text-base font-semibold text-white",
+            displayFontBold.className
           )}
-          dangerouslySetInnerHTML={{ __html: field.label }}
+          dangerouslySetInnerHTML={{ __html: normalizedLabel }}
         />
         {field.options?.map((option) => (
           <label key={option.value} className="mb-3 flex cursor-pointer items-start space-x-4">
@@ -172,7 +208,7 @@ export function DynamicStepField({
                   checked={String(value) === option.value}
                   onChange={(e) => onInputChange(field.name || "", e.target.value)}
                   disabled={option.disabled}
-                  className="before:content[''] peer before:bg-blue-gray-500 relative h-4 w-4 cursor-pointer appearance-none rounded-full bg-[#D9D9D9] transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-x-2/4 before:-translate-y-2/4 before:rounded-full before:opacity-0 before:transition-opacity checked:bg-[#E2C17E] checked:before:bg-[#E2C17E] hover:before:opacity-10"
+                  className="before:content[''] peer before:bg-[#d4a574] relative h-4 w-4 cursor-pointer appearance-none rounded-full bg-[#e2e8f0] transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-x-2/4 before:-translate-y-2/4 before:rounded-full before:opacity-0 before:transition-opacity checked:bg-[#d4a574] checked:before:bg-[#d4a574] hover:before:opacity-10"
                 />
                 <div className="pointer-events-none absolute top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
                   <div className="h-2 w-2 rounded-full bg-white"></div>
@@ -180,20 +216,20 @@ export function DynamicStepField({
               </label>
             </div>
             <span
-              className={classNames("text-left text-sm text-white", chivasLoudBold.className)}
+              className={classNames("text-left text-base text-white", displayFontBold.className)}
               dangerouslySetInnerHTML={{ __html: option.label }}
             />
           </label>
         ))}
         {error && field.required ? (
           <p
-            className="mt-1 rounded-b-md bg-red-600/10 text-xs font-bold text-red-600 uppercase"
-            dangerouslySetInnerHTML={{ __html: `${field.label} is required` }}
+            className="mt-1 text-sm font-semibold text-red-300"
+            dangerouslySetInnerHTML={{ __html: `${normalizedLabel} is required` }}
           />
-        ) : field.helperText ? (
+        ) : normalizedHelperText ? (
           <p
-            className="mt-1 rounded-b-md bg-red-600/10 text-xs font-bold text-red-600 uppercase"
-            dangerouslySetInnerHTML={{ __html: field.helperText }}
+            className="mt-1 text-sm text-white/70"
+            dangerouslySetInnerHTML={{ __html: normalizedHelperText }}
           />
         ) : null}
       </div>
@@ -211,7 +247,7 @@ export function DynamicStepField({
                 type="checkbox"
                 checked={Boolean(value)}
                 onChange={(e) => onInputChange(field.name || "", e.target.checked)}
-                className="before:content[''] peer before:bg-blue-gray-500 relative h-4 w-4 cursor-pointer appearance-none rounded-md bg-[#D9D9D9] transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-x-2/4 before:-translate-y-2/4 before:rounded-full before:opacity-0 before:transition-opacity checked:bg-[#E2C17E] checked:before:bg-[#E2C17E] hover:before:opacity-10"
+                className="before:content[''] peer before:bg-[#d4a574] relative h-4 w-4 cursor-pointer appearance-none rounded-md bg-[#e2e8f0] transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-x-2/4 before:-translate-y-2/4 before:rounded-full before:opacity-0 before:transition-opacity checked:bg-[#d4a574] checked:before:bg-[#d4a574] hover:before:opacity-10"
               />
               <div className="pointer-events-none absolute top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
                 <svg
@@ -232,19 +268,19 @@ export function DynamicStepField({
             </label>
           </div>
           <span
-            className={classNames("text-left text-sm text-white", chivasLoudBold.className)}
-            dangerouslySetInnerHTML={{ __html: field.label }}
+            className={classNames("text-left text-base text-white", displayFontBold.className)}
+            dangerouslySetInnerHTML={{ __html: normalizedLabel }}
           />
         </label>
         {error && field.required ? (
           <p
-            className="mt-1 ml-8 rounded-b-md bg-red-600/10 text-xs font-bold text-red-600 uppercase"
-            dangerouslySetInnerHTML={{ __html: `${field.label} is required` }}
+            className="mt-1 ml-8 text-sm font-semibold text-red-300"
+            dangerouslySetInnerHTML={{ __html: `${normalizedLabel} is required` }}
           />
-        ) : field.helperText ? (
+        ) : normalizedHelperText ? (
           <p
-            className="mt-1 ml-8 text-xs text-gray-300"
-            dangerouslySetInnerHTML={{ __html: field.helperText }}
+            className="mt-1 ml-8 text-sm text-white/70"
+            dangerouslySetInnerHTML={{ __html: normalizedHelperText }}
           />
         ) : null}
       </div>
@@ -261,36 +297,36 @@ export function DynamicStepField({
       }
 
       if (field.required) {
-        return `${field.label} is required`;
+        return `${normalizedLabel} is required`;
       }
 
       const stringValue = String(value || "");
 
       if (field.validation?.maxLength && stringValue.length > field.validation.maxLength) {
-        return `${field.label} must be ${field.validation.maxLength} characters or less`;
+        return `${normalizedLabel} must be ${field.validation.maxLength} characters or less`;
       }
 
       if (field.validation?.minLength && stringValue.length < field.validation.minLength) {
-        return `${field.label} must be at least ${field.validation.minLength} characters`;
+        return `${normalizedLabel} must be at least ${field.validation.minLength} characters`;
       }
 
-      return `${field.label} is invalid`;
+      return `${normalizedLabel} is invalid`;
     };
 
     return (
       <div key={index}>
         <Textarea
-          placeholder={field.placeholder || ""}
+          placeholder={normalizedPlaceholder || ""}
           value={String(value || "")}
           required={field.required}
           errorMessage={getTextareaErrorMessage()}
           onChange={(value) => onInputChange(field.name || "", value)}
           rows={field.rows}
         />
-        {!error && field.helperText && (
+        {!error && normalizedHelperText && (
           <p
-            className="mt-1 text-xs text-gray-300"
-            dangerouslySetInnerHTML={{ __html: field.helperText }}
+            className="mt-1 text-sm text-white/70"
+            dangerouslySetInnerHTML={{ __html: normalizedHelperText }}
           />
         )}
       </div>
@@ -307,26 +343,26 @@ export function DynamicStepField({
       }
 
       if (field.required) {
-        return `${field.label} is required`;
+        return `${normalizedLabel} is required`;
       }
 
-      return `${field.label} is invalid`;
+      return `${normalizedLabel} is invalid`;
     };
 
     return (
       <div key={index}>
         <TimePicker24H
-          placeholder={field.placeholder || ""}
+          placeholder={normalizedPlaceholder || ""}
           value={String(value || "")}
           required={field.required}
           error={error}
           errorMessage={getTimeErrorMessage()}
           onChange={(value) => onInputChange(field.name || "", value)}
         />
-        {!error && field.helperText && (
+        {!error && normalizedHelperText && (
           <p
-            className="mt-1 text-xs text-gray-300"
-            dangerouslySetInnerHTML={{ __html: field.helperText }}
+            className="mt-1 text-sm text-white/70"
+            dangerouslySetInnerHTML={{ __html: normalizedHelperText }}
           />
         )}
       </div>
@@ -374,7 +410,7 @@ export function DynamicStepField({
         }
       }
 
-      return field.validation?.message || `${field.label} is required`;
+      return field.validation?.message || `${normalizedLabel} is required`;
     };
 
     const errorMsg = getDateErrorMessage();
@@ -404,12 +440,12 @@ export function DynamicStepField({
               : undefined
           }
           required={field.required}
-          placeholder={field.placeholder || ""}
+          placeholder={normalizedPlaceholder || ""}
           className={classNames(
             "w-full rounded-md px-3 py-1.5 md:py-2 md:text-lg",
-            "rounded bg-[#D9D9D9] text-center !text-[#878680] !shadow-[inset_0_5px_8px_rgba(0,0,0,0.25)]",
+            "rounded bg-[#e2e8f0] text-center !text-[#64748b] !shadow-[inset_0_5px_8px_rgba(0,0,0,0.25)]",
             "transition-all outline-none focus:!shadow-[inset_0_5px_8px_rgba(0,0,0,0.25)]",
-            chivasLuxRegular.className,
+            bodyFontRegular.className,
             error ? "border-red-500" : ""
           )}
         />
@@ -417,10 +453,10 @@ export function DynamicStepField({
           <div className="absolute -bottom-4 mt-1 flex w-full items-center justify-center gap-1 rounded-b-md bg-red-600/10 text-center text-[10px] font-bold text-red-100 uppercase sm:-bottom-5">
             <span dangerouslySetInnerHTML={{ __html: errorMsg }} />
           </div>
-        ) : field.helperText ? (
+        ) : normalizedHelperText ? (
           <p
             className="mt-1 text-xs text-gray-300"
-            dangerouslySetInnerHTML={{ __html: field.helperText }}
+            dangerouslySetInnerHTML={{ __html: normalizedHelperText }}
           />
         ) : null}
       </div>
@@ -437,16 +473,16 @@ export function DynamicStepField({
       }
 
       if (field.required) {
-        return `${field.label} is required`;
+        return `${normalizedLabel} is required`;
       }
 
-      return `${field.label} is invalid`;
+      return `${normalizedLabel} is invalid`;
     };
 
     return (
       <div key={index}>
         <DateTimePicker
-          placeholder={field.placeholder || ""}
+          placeholder={normalizedPlaceholder || ""}
           value={String(value || "")}
           required={field.required}
           error={error}
@@ -456,10 +492,10 @@ export function DynamicStepField({
           minDate={field.validation?.minDate}
           maxDate={field.validation?.maxDate}
         />
-        {!error && field.helperText && (
+        {!error && normalizedHelperText && (
           <p
             className="mt-1 text-xs text-gray-300"
-            dangerouslySetInnerHTML={{ __html: field.helperText }}
+            dangerouslySetInnerHTML={{ __html: normalizedHelperText }}
           />
         )}
       </div>
@@ -476,7 +512,7 @@ export function DynamicStepField({
       }
 
       if (field.required) {
-        return `${field.label} is required`;
+        return `${normalizedLabel} is required`;
       }
 
       return "Please enter a valid phone number";
@@ -485,7 +521,7 @@ export function DynamicStepField({
     return (
       <div key={index}>
         <PhoneInput
-          placeholder={field.placeholder || ""}
+          placeholder={normalizedPlaceholder || ""}
           value={String(value || "")}
           required={field.required}
           error={error}
@@ -493,10 +529,10 @@ export function DynamicStepField({
           onChange={(value) => onInputChange(field.name || "", value)}
           defaultCountry={field.defaultCountry || "AE"}
         />
-        {!error && field.helperText && (
+        {!error && normalizedHelperText && (
           <p
             className="mt-1 text-xs text-gray-300"
-            dangerouslySetInnerHTML={{ __html: field.helperText }}
+            dangerouslySetInnerHTML={{ __html: normalizedHelperText }}
           />
         )}
       </div>
@@ -514,18 +550,18 @@ export function DynamicStepField({
 
     // Required field error
     if (field.required) {
-      return `${field.label} is required`;
+      return `${normalizedLabel} is required`;
     }
 
     // Validation errors for non-required fields
     const stringValue = String(value || "");
 
     if (field.validation?.maxLength && stringValue.length > field.validation.maxLength) {
-      return `${field.label} must be ${field.validation.maxLength} characters or less`;
+      return `${normalizedLabel} must be ${field.validation.maxLength} characters or less`;
     }
 
     if (field.validation?.minLength && stringValue.length < field.validation.minLength) {
-      return `${field.label} must be at least ${field.validation.minLength} characters`;
+      return `${normalizedLabel} must be at least ${field.validation.minLength} characters`;
     }
 
     if (field.type === "email") {
@@ -541,28 +577,28 @@ export function DynamicStepField({
     }
 
     if (field.validation?.pattern) {
-      return `${field.label} format is invalid`;
+      return `${normalizedLabel} format is invalid`;
     }
 
     // Generic fallback
-    return `${field.label} is invalid`;
+    return `${normalizedLabel} is invalid`;
   };
 
   return (
     <div key={index}>
       <Input
         type={field.type || "text"}
-        placeholder={field.placeholder || ""}
+        placeholder={normalizedPlaceholder || ""}
         value={String(value || "")}
         required={field.required}
         errorMessage={getErrorMessage()}
         onChange={(value) => onInputChange(field.name || "", value)}
         size="full"
       />
-      {!error && field.helperText && (
+      {!error && normalizedHelperText && (
         <p
           className="mt-1 text-xs text-gray-300"
-          dangerouslySetInnerHTML={{ __html: field.helperText }}
+          dangerouslySetInnerHTML={{ __html: normalizedHelperText }}
         />
       )}
     </div>

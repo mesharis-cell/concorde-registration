@@ -2,32 +2,43 @@
 @import "react-day-picker/style.css";
 
 @theme {
-  --font-chivas-loud: var(--font-chivas-loud);
-  --font-chivas-loud-bold: var(--font-chivas-loud-bold);
-  --font-chivas-loud-extra-bold: var(--font-chivas-loud-extra-bold);
-  --font-chivas-loud-medium: var(--font-chivas-loud-medium);
-  --font-chivas-loud-regular: var(--font-chivas-loud-regular);
-  --font-chivas-lux-light: var(--font-chivas-lux-light);
-  --font-chivas-lux-regular: var(--font-chivas-lux-regular);
-  --font-chivas-lux-semibold: var(--font-chivas-lux-semibold);
-  --font-chivas-priori-light: var(--font-chivas-priori-light);
-  --font-chivas-priori-regular: var(--font-chivas-priori-regular);
-  --font-chivas-priori-italic: var(--font-chivas-priori-italic);
-  --font-chivas-priori-black: var(--font-chivas-priori-black);
+  --font-display: var(--font-display);
+  --font-display-bold: var(--font-display-bold);
+  --font-display-extra-bold: var(--font-display-extra-bold);
+  --font-display-medium: var(--font-display-medium);
+  --font-display-regular: var(--font-display-regular);
+  --font-body-light: var(--font-body-light);
+  --font-body-regular: var(--font-body-regular);
+  --font-body-semibold: var(--font-body-semibold);
+  --font-accent-light: var(--font-accent-light);
+  --font-accent-regular: var(--font-accent-regular);
+  --font-accent-italic: var(--font-accent-italic);
+  --font-accent-black: var(--font-accent-black);
 
   /* Custom Breakpoints */
   --breakpoint-xs: 400px;
 
-  /* Experimental */
-  --primary: #fed425;
-  --secondary: #3f2b20;
-  --tertiary: #6edc00;
+  --color-shell-top: #111111;
+  --color-shell-bottom: #0c0c0c;
+  --color-shell-overlay: rgba(184, 141, 61, 0.08);
 
-  --brand-primary: #ffefc9;
-  --brand-secondary: #ffe7ad;
-  --brand-tertiary: #ffffff;
+  --color-panel-top: #1a1a1a;
+  --color-panel-bottom: #151515;
+  --color-panel-muted-top: #1e1e1e;
+  --color-panel-muted-bottom: #121212;
 
-  --brand-effect: #f3e4c3;
+  --color-text-main: #eeeeee;
+  --color-text-muted: #888888;
+
+  --color-accent-soft: #ffe0c2;
+  --color-accent: #d4a574;
+  --color-accent-strong: #b88d3d;
+  --color-accent-deep: #8f6427;
+
+  --color-input-bg: #e2e8f0;
+  --color-input-text: #475569;
+  --color-input-placeholder: #64748b;
+  --color-danger: #ef4444;
 }
 
 @layer base {
@@ -36,7 +47,7 @@
   }
 
   .inner-shadow-text {
-    @apply inline-block bg-linear-to-t from-white to-gray-400 bg-clip-text tracking-[3px] text-transparent uppercase;
+    @apply inline-block bg-linear-to-r from-[var(--color-accent-soft)] to-[var(--color-accent-strong)] bg-clip-text text-transparent;
   }
 }
 
@@ -149,32 +160,60 @@
   .rich-content p[style*="text-align: left"] {
     @apply text-left;
   }
+
+  .form-field-input {
+    background: var(--color-input-bg);
+    color: var(--color-input-text);
+    box-shadow: inset 0 5px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .form-field-input::placeholder {
+    color: var(--color-input-placeholder);
+    text-align: center;
+  }
+
+  .form-field-input:focus {
+    box-shadow: inset 0 5px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .selection-control {
+    background: var(--color-input-bg);
+    transition: all 0.2s ease;
+  }
+
+  .selection-control:checked {
+    background: var(--color-accent);
+  }
+
+  .selection-control:checked::before {
+    background: var(--color-accent);
+  }
 }
 
 @layer utilities {
   /* ====== Font Utilities ====== */
-  .font-chivas-loud-regular {
-    font-family: var(--font-chivas-loud-regular);
+  .font-display-regular {
+    font-family: var(--font-display-regular);
   }
 
-  .font-chivas-loud-medium {
-    font-family: var(--font-chivas-loud-medium);
+  .font-display-medium {
+    font-family: var(--font-display-medium);
   }
 
-  .font-chivas-loud-bold {
-    font-family: var(--font-chivas-loud-bold);
+  .font-display-bold {
+    font-family: var(--font-display-bold);
   }
 
-  .font-chivas-loud-extra-bold {
-    font-family: var(--font-chivas-loud-extra-bold);
+  .font-display-extra-bold {
+    font-family: var(--font-display-extra-bold);
   }
 
-  .font-chivas-lux-regular {
-    font-family: var(--font-chivas-lux-regular);
+  .font-body-regular {
+    font-family: var(--font-body-regular);
   }
 
-  .font-chivas-lux-semibold {
-    font-family: var(--font-chivas-lux-semibold);
+  .font-body-semibold {
+    font-family: var(--font-body-semibold);
   }
 }
 
@@ -188,21 +227,22 @@
 body,
 html {
   box-sizing: border-box;
+  color: var(--color-text-main);
 }
 
 .dynamic-field-uppercase {
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 .dynamic-field-uppercase::placeholder {
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 /* Style links in form field labels and helper text */
 .dynamic-step-field a,
 label a,
 p a {
-  color: #e2c17e;
+  color: var(--color-accent-soft);
   text-decoration: underline;
   cursor: pointer;
   transition: opacity 0.2s;
@@ -244,77 +284,54 @@ img {
 }
 
 .gradient-button {
-  background-image: linear-gradient(to right, #b88d3d, #d3b375, #f3dfb3, #b48836);
+  background-image: linear-gradient(
+    135deg,
+    var(--color-accent-deep),
+    var(--color-accent-strong),
+    var(--color-accent),
+    var(--color-accent-deep)
+  );
 }
 
-.mobile-bg-gold {
-  background-image: url("/assets/bg-gold.svg");
+.bg-shell-mobile {
+  background: radial-gradient(circle at top right, var(--color-shell-overlay) 0%, transparent 40%),
+    linear-gradient(180deg, var(--color-shell-top) 0%, var(--color-shell-bottom) 100%);
+  background-attachment: fixed;
   background-size: cover;
-  background-position: center;
   background-repeat: no-repeat;
-  background-position: fixed;
 }
 
-.desktop-bg-gold {
-  background-image: url("/assets/bg-desktop.svg");
+.bg-shell-desktop {
+  background: radial-gradient(circle at 10% 10%, var(--color-shell-overlay) 0%, transparent 35%),
+    radial-gradient(circle at 90% 20%, rgba(212, 165, 116, 0.08) 0%, transparent 40%),
+    linear-gradient(180deg, var(--color-shell-top) 0%, var(--color-shell-bottom) 100%);
+  background-attachment: fixed;
   background-size: cover;
-  background-position: center;
   background-repeat: no-repeat;
-  background-position: fixed;
 }
 
 .shadow-button {
   box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
 }
 
-/* ====== LUXURY GOLD GRADIENT ====== */
+.bg-panel-base {
+  background: linear-gradient(180deg, var(--color-panel-top) 0%, var(--color-panel-bottom) 100%);
+}
 
-/* Main luxury gold gradient - matches the exact gradient from your image */
-.bg-luxury-gold {
+.bg-panel-muted {
   background: linear-gradient(
     180deg,
-    #b48836 0%,
-    /* Medium gold */ #c49d51 18%,
-    /* Rich gold */ #e5c37d 26%,
-    /* Deep gold */ #e9c782 32%,
-    /* Dark gold */ #debe79 53%,
-    /* Mid gold */ #c49d51 65%,
-    /* Light gold return */ #c69143 85% /* Final gold at bottom */
+    var(--color-panel-muted-top) 0%,
+    var(--color-panel-muted-bottom) 100%
   );
 }
 
-.bg-luxury-gold-desktop {
-  background: linear-gradient(
-    180deg,
-    #eed194 0%,
-    /* Medium gold */ #d8b671 8%,
-    /* Rich gold */ #c49d51 18%,
-    /* Deep gold */ #b88d3d 26%,
-    /* Dark gold */ #b48836 32%,
-    /* Mid gold */ #debe79 53%,
-    /* Light gold return */ #edd191 60%,
-    /* Light gold return */ #c69143 85%
-  );
-}
-
-/* ====== GRAIN EFFECT VARIATIONS ====== */
-
-.bg-luxury-grain {
-  background: linear-gradient(
-    180deg,
-    #878680 0%,
-    /* Medium gold */ #5b5b58 31%,
-    /* Rich gold */ #878680 60%,
-    /* Deep gold */ #585652 85%
-  );
-}
-
-/* Base setup for all grain effects */
-.add-grain-3 {
+/* Base setup for texture layer */
+.add-texture {
   position: relative;
 }
 
-.add-grain-3::before {
+.add-texture::before {
   content: "";
   position: absolute;
   top: 0;
@@ -325,37 +342,37 @@ img {
   z-index: 10;
 }
 
-/* 3. RANDOM NOISE - SVG fractal noise (enhanced visibility) */
-.add-grain-3::before {
-  opacity: 0.35;
+/* Random noise texture */
+.add-texture::before {
+  opacity: 0.2;
   background-image: url("data:image/svg+xml,%3Csvg width='200' height='200' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.7 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
-  mix-blend-mode: multiply;
+  mix-blend-mode: soft-light;
 }
 
 .rdp-chevron {
-  fill: #878680 !important;
+  fill: var(--color-input-placeholder) !important;
 }
 
 .rdp-selected .rdp-day_button {
-  border: 1.5px solid #c69143 !important;
+  border: 1.5px solid var(--color-accent-deep) !important;
 }
 
 .rdp-today {
   font-weight: 700 !important;
-  color: #878680 !important;
+  color: var(--color-input-text) !important;
   text-decoration: underline !important;
 }
 
 .rdp-day_button:hover {
-  color: #878680 !important;
+  color: var(--color-input-text) !important;
 }
 
 .rdp-day_button:focus {
-  color: #878680 !important;
+  color: var(--color-input-text) !important;
 }
 
 .rdp-selected {
-  color: #c69143 !important;
+  color: var(--color-accent-deep) !important;
 }
 
 .rdp-month_caption {

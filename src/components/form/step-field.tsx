@@ -1,5 +1,5 @@
 import React from "react";
-import { chivasLoudBold, chivasLuxRegular } from "@/fonts";
+import { displayFontBold, bodyFontRegular } from "@/fonts";
 import { classNames } from "@/utils";
 import Input from "@/components/common/input";
 import Textarea from "@/components/common/textarea";
@@ -63,7 +63,7 @@ export function StepField({
         <span
           className={classNames(
             "text-sm tracking-wide text-white uppercase",
-            chivasLoudBold.className
+            displayFontBold.className
           )}
         >
           {field.text}
@@ -78,8 +78,16 @@ export function StepField({
     // Special handling for hotel field - dynamic options from event config
     if (field.name === "hotel") {
       const eventId = process.env.NEXT_PUBLIC_EVENT_ID;
-
-      if (!eventId) throw new Error("Event ID not found. Please contact support.");
+      if (!eventId) {
+        return (
+          <div
+            key={index}
+            className="rounded-md border border-red-400/40 bg-red-500/10 px-3 py-2 text-xs text-red-100 uppercase"
+          >
+            Event configuration is missing for this registration link.
+          </div>
+        );
+      }
 
       return (
         <DynamicHotelField
@@ -97,8 +105,16 @@ export function StepField({
     // Special handling for groups field - dynamic options from event groups
     if (field.name === "groupId") {
       const eventId = process.env.NEXT_PUBLIC_EVENT_ID;
-
-      if (!eventId) throw new Error("Event ID not found. Please contact support.");
+      if (!eventId) {
+        return (
+          <div
+            key={index}
+            className="rounded-md border border-red-400/40 bg-red-500/10 px-3 py-2 text-xs text-red-100 uppercase"
+          >
+            Event configuration is missing for this registration link.
+          </div>
+        );
+      }
 
       return (
         <DynamicGroupsField
@@ -119,16 +135,16 @@ export function StepField({
         <select
           className={classNames(
             "w-full rounded-md px-3 py-1.5 md:py-2 md:text-lg",
-            "rounded bg-[#D9D9D9] text-center text-[#878680] !shadow-[inset_0_5px_8px_rgba(0,0,0,0.25)]",
+            "rounded bg-[#e2e8f0] text-center text-[#64748b] !shadow-[inset_0_5px_8px_rgba(0,0,0,0.25)]",
             "transition-all outline-none focus:!shadow-[inset_0_5px_8px_rgba(0,0,0,0.25)]",
             "cursor-pointer appearance-none",
-            chivasLuxRegular.className
+            bodyFontRegular.className
           )}
           value={String(value || "")}
           required={field.required}
           onChange={(e) => onInputChange(field.name || "", e.target.value)}
         >
-          <option value="" className="text-[#878680]">
+          <option value="" className="text-[#64748b]">
             {field.placeholder}
           </option>
           {field.options?.map((option) => (
@@ -153,7 +169,7 @@ export function StepField({
         <label
           className={classNames(
             "mb-3 block text-sm font-bold text-white",
-            chivasLoudBold.className
+            displayFontBold.className
           )}
         >
           {field.placeholder}
@@ -168,14 +184,14 @@ export function StepField({
                   value={option.value}
                   checked={String(value) === option.value}
                   onChange={(e) => onInputChange(field.name || "", e.target.value)}
-                  className="before:content[''] peer before:bg-blue-gray-500 relative h-4 w-4 cursor-pointer appearance-none rounded-full bg-[#D9D9D9] transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-x-2/4 before:-translate-y-2/4 before:rounded-full before:opacity-0 before:transition-opacity checked:bg-[#E2C17E] checked:before:bg-[#E2C17E] hover:before:opacity-10"
+                  className="before:content[''] peer before:bg-[#d4a574] relative h-4 w-4 cursor-pointer appearance-none rounded-full bg-[#e2e8f0] transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-x-2/4 before:-translate-y-2/4 before:rounded-full before:opacity-0 before:transition-opacity checked:bg-[#d4a574] checked:before:bg-[#d4a574] hover:before:opacity-10"
                 />
                 <div className="pointer-events-none absolute top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
                   <div className="h-2 w-2 rounded-full bg-white"></div>
                 </div>
               </label>
             </div>
-            <span className={classNames("text-left text-sm text-white", chivasLoudBold.className)}>
+            <span className={classNames("text-left text-sm text-white", displayFontBold.className)}>
               {option.label}
             </span>
           </label>
@@ -198,7 +214,7 @@ export function StepField({
                 type="checkbox"
                 checked={Boolean(value)}
                 onChange={(e) => onInputChange(field.name || "", e.target.checked)}
-                className="before:content[''] peer before:bg-blue-gray-500 relative h-4 w-4 cursor-pointer appearance-none rounded-md bg-[#D9D9D9] transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-x-2/4 before:-translate-y-2/4 before:rounded-full before:opacity-0 before:transition-opacity checked:bg-[#E2C17E] checked:before:bg-[#E2C17E] hover:before:opacity-10"
+                className="before:content[''] peer before:bg-[#d4a574] relative h-4 w-4 cursor-pointer appearance-none rounded-md bg-[#e2e8f0] transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-x-2/4 before:-translate-y-2/4 before:rounded-full before:opacity-0 before:transition-opacity checked:bg-[#d4a574] checked:before:bg-[#d4a574] hover:before:opacity-10"
               />
               <div className="pointer-events-none absolute top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
                 <svg
@@ -218,7 +234,7 @@ export function StepField({
               </div>
             </label>
           </div>
-          <span className={classNames("text-left text-sm text-white", chivasLoudBold.className)}>
+          <span className={classNames("text-left text-sm text-white", displayFontBold.className)}>
             {field.text}
           </span>
         </label>
@@ -235,7 +251,7 @@ export function StepField({
         <h3
           className={classNames(
             "text-sm font-bold tracking-wider text-white/70 uppercase",
-            chivasLoudBold.className
+            displayFontBold.className
           )}
         >
           {field.text}

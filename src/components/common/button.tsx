@@ -2,7 +2,7 @@
 
 import React from "react";
 import { classNames } from "@/utils";
-import { chivasLoudExtraBold } from "@/fonts";
+import { displayFontExtraBold } from "@/fonts";
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   size?: "sm" | "lg" | "xl";
@@ -41,9 +41,9 @@ const Button: React.FC<ButtonProps> = ({
         size === "lg" ? "px-4 py-2 text-sm sm:text-base" : "",
         size === "xl" ? "px-6 py-2 text-base focus:ring-4 sm:py-3" : "",
         disabled ? "opacity-75 focus:ring-0" : "",
-        transparent ? "inner-shadow-text" : "gradient-button text-[#A08447]",
+        transparent ? "inner-shadow-text" : "gradient-button text-[#111111]",
         full ? "w-full" : "",
-        chivasLoudExtraBold.className,
+        displayFontExtraBold.className,
         className
       )}
       aria-label={ariaLabel}
