@@ -30,6 +30,18 @@ function CompleteUser({ name, email, wallet, checkIn }: CompleteUserProps) {
   const qrCodeRef = useRef<QRCodeRef>(null);
   const [shareError, setShareError] = useState<string>("");
   const [sharing, setSharing] = useState(false);
+  const hasWallet = Boolean(wallet?.googleWalletUrl);
+  const qrValue =
+    wallet?.passReferenceId?.trim() || checkIn?.qrPayloadUrl?.trim() || "";
+  const hasQrPayload = Boolean(qrValue);
+  const availabilityMessage =
+    hasQrPayload && !hasWallet
+      ? "Google Wallet pass is unavailable right now. You can still use the QR code for check-in."
+      : !hasQrPayload && hasWallet
+        ? "Check-in QR is unavailable right now. You can still use your Google Wallet pass for entry."
+        : !hasQrPayload && !hasWallet
+          ? "Google Wallet pass and check-in QR are currently unavailable. Please return to registration and try again."
+          : null;
 
   const downloadQrImage = useCallback((): boolean => {
     const qrImage = qrCodeRef.current?.getImage();
@@ -49,7 +61,7 @@ function CompleteUser({ name, email, wallet, checkIn }: CompleteUserProps) {
   const handleShare = useCallback(async () => {
     setShareError("");
 
-    if (!checkIn?.qrPayloadUrl) {
+    if (!qrValue) {
       setShareError("No QR payload is available to share.");
       return;
     }
@@ -59,7 +71,7 @@ function CompleteUser({ name, email, wallet, checkIn }: CompleteUserProps) {
     try {
       const qrImage = qrCodeRef.current?.getImage();
       const title = "Savvio Concorde Check-In Pass";
-      const text = "Save this pass or screenshot the QR for event entry.";
+      const text = "Savvio Concorde entry pass attached.";
 
       if (navigator.share) {
         if (qrImage) {
@@ -78,7 +90,6 @@ function CompleteUser({ name, email, wallet, checkIn }: CompleteUserProps) {
               await navigator.share({
                 title,
                 text,
-                url: checkIn.qrPayloadUrl,
                 files: [imageFile]
               });
               return;
@@ -90,8 +101,7 @@ function CompleteUser({ name, email, wallet, checkIn }: CompleteUserProps) {
 
         await navigator.share({
           title,
-          text,
-          url: checkIn.qrPayloadUrl
+          text
         });
         return;
       }
@@ -111,18 +121,7 @@ function CompleteUser({ name, email, wallet, checkIn }: CompleteUserProps) {
     } finally {
       setSharing(false);
     }
-  }, [checkIn?.qrPayloadUrl, downloadQrImage]);
-
-  const hasWallet = Boolean(wallet?.googleWalletUrl);
-  const hasQrPayload = Boolean(checkIn?.qrPayloadUrl);
-  const availabilityMessage =
-    hasQrPayload && !hasWallet
-      ? "Google Wallet pass is unavailable right now. You can still use the QR code for check-in."
-      : !hasQrPayload && hasWallet
-        ? "Check-in QR is unavailable right now. You can still use your Google Wallet pass for entry."
-        : !hasQrPayload && !hasWallet
-          ? "Google Wallet pass and check-in QR are currently unavailable. Please return to registration and try again."
-          : null;
+  }, [downloadQrImage, qrValue]);
 
   return (
     <div
@@ -141,7 +140,7 @@ function CompleteUser({ name, email, wallet, checkIn }: CompleteUserProps) {
         <div className="w-full max-w-[248px] rounded-xl border border-white/15 bg-black/20 p-3 sm:max-w-[288px] sm:p-5">
           <QRCode
             ref={qrCodeRef}
-            value={checkIn?.qrPayloadUrl ?? ""}
+            value={qrValue}
             size={240}
             color="#000000"
             background="#ffffff"
