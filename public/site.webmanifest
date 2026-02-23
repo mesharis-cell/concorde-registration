@@ -1,0 +1,29 @@
+{
+    "name": "Chivas Regal Abu Dhabi - Event Companion",
+    "short_name": "Chivas Abu Dhabi",
+    "description": "Your personalized itinerary for Chivas Regal Abu Dhabi 2025",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#b88d3d",
+    "theme_color": "#b88d3d",
+    "orientation": "portrait",
+    "icons": [
+        {
+            "src": "/android-chrome-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "categories": [
+        "lifestyle",
+        "travel",
+        "events"
+    ],
+    "lang": "en",
+    "scope": "/"
+}

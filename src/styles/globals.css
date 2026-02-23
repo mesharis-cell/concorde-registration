@@ -1,0 +1,363 @@
+@import "tailwindcss";
+@import "react-day-picker/style.css";
+
+@theme {
+  --font-chivas-loud: var(--font-chivas-loud);
+  --font-chivas-loud-bold: var(--font-chivas-loud-bold);
+  --font-chivas-loud-extra-bold: var(--font-chivas-loud-extra-bold);
+  --font-chivas-loud-medium: var(--font-chivas-loud-medium);
+  --font-chivas-loud-regular: var(--font-chivas-loud-regular);
+  --font-chivas-lux-light: var(--font-chivas-lux-light);
+  --font-chivas-lux-regular: var(--font-chivas-lux-regular);
+  --font-chivas-lux-semibold: var(--font-chivas-lux-semibold);
+  --font-chivas-priori-light: var(--font-chivas-priori-light);
+  --font-chivas-priori-regular: var(--font-chivas-priori-regular);
+  --font-chivas-priori-italic: var(--font-chivas-priori-italic);
+  --font-chivas-priori-black: var(--font-chivas-priori-black);
+
+  /* Custom Breakpoints */
+  --breakpoint-xs: 400px;
+
+  /* Experimental */
+  --primary: #fed425;
+  --secondary: #3f2b20;
+  --tertiary: #6edc00;
+
+  --brand-primary: #ffefc9;
+  --brand-secondary: #ffe7ad;
+  --brand-tertiary: #ffffff;
+
+  --brand-effect: #f3e4c3;
+}
+
+@layer base {
+  button {
+    @apply cursor-pointer;
+  }
+
+  .inner-shadow-text {
+    @apply inline-block bg-linear-to-t from-white to-gray-400 bg-clip-text tracking-[3px] text-transparent uppercase;
+  }
+}
+
+@layer components {
+  /* Chrome, Safari, Opera */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  /* Firefox */
+  .scrollbar-hide {
+    scrollbar-width: none;
+    -ms-overflow-style: none; /* IE and Edge */
+  }
+
+  /* Rich Content Styling for Editor HTML */
+  .rich-content {
+    @apply space-y-3;
+  }
+
+  /* Tables */
+  .rich-content table {
+    @apply w-full border-collapse overflow-hidden rounded-lg;
+    border-spacing: 0;
+    table-layout: auto; /* Let content determine width naturally */
+  }
+
+  /* Override problematic inline column widths from rich editor */
+  .rich-content colgroup,
+  .rich-content col {
+    width: auto !important;
+    min-width: auto !important;
+  }
+
+  .rich-content th {
+    @apply bg-white/10 px-3 py-2 text-left font-medium text-white;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    white-space: nowrap; /* Prevent awkward wrapping in headers */
+  }
+
+  .rich-content td {
+    @apply px-3 py-2 text-white;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* For 2-column Time/Itinerary tables, balance them better */
+  .rich-content table th:first-child,
+  .rich-content table td:first-child {
+    width: 35%; /* Time column: shorter */
+  }
+
+  .rich-content table th:nth-child(2),
+  .rich-content table td:nth-child(2) {
+    width: 65%; /* Itinerary column: wider for content */
+  }
+
+  .rich-content th p,
+  .rich-content td p {
+    @apply m-0;
+  }
+
+  /* Paragraphs */
+  .rich-content p {
+    @apply mb-3 last:mb-0;
+  }
+
+  /* Strong and emphasis */
+  .rich-content strong {
+    @apply font-bold;
+  }
+
+  .rich-content em {
+    @apply italic;
+  }
+
+  /* Horizontal rules */
+  .rich-content hr {
+    @apply my-4 border-white/20;
+  }
+
+  /* Lists */
+  .rich-content ul,
+  .rich-content ol {
+    @apply mb-3 ml-4;
+  }
+
+  .rich-content li {
+    @apply mb-1;
+  }
+
+  /* Force white text - override ALL inline colors from backend */
+  .rich-content,
+  .rich-content *,
+  .rich-content p,
+  .rich-content span,
+  .rich-content div,
+  .rich-content strong,
+  .rich-content em {
+    color: white !important;
+  }
+
+  /* Text alignment classes that might come from editor */
+  .rich-content p[style*="text-align: center"] {
+    @apply text-center;
+  }
+
+  .rich-content p[style*="text-align: right"] {
+    @apply text-right;
+  }
+
+  .rich-content p[style*="text-align: left"] {
+    @apply text-left;
+  }
+}
+
+@layer utilities {
+  /* ====== Font Utilities ====== */
+  .font-chivas-loud-regular {
+    font-family: var(--font-chivas-loud-regular);
+  }
+
+  .font-chivas-loud-medium {
+    font-family: var(--font-chivas-loud-medium);
+  }
+
+  .font-chivas-loud-bold {
+    font-family: var(--font-chivas-loud-bold);
+  }
+
+  .font-chivas-loud-extra-bold {
+    font-family: var(--font-chivas-loud-extra-bold);
+  }
+
+  .font-chivas-lux-regular {
+    font-family: var(--font-chivas-lux-regular);
+  }
+
+  .font-chivas-lux-semibold {
+    font-family: var(--font-chivas-lux-semibold);
+  }
+}
+
+/* Default CSS */
+
+* {
+  box-sizing: border-box;
+  outline: none;
+}
+
+body,
+html {
+  box-sizing: border-box;
+}
+
+.dynamic-field-uppercase {
+  text-transform: uppercase;
+}
+
+.dynamic-field-uppercase::placeholder {
+  text-transform: uppercase;
+}
+
+/* Style links in form field labels and helper text */
+.dynamic-step-field a,
+label a,
+p a {
+  color: #e2c17e;
+  text-decoration: underline;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.dynamic-step-field a:hover,
+label a:hover,
+p a:hover {
+  opacity: 0.8;
+}
+
+a {
+  text-decoration: none;
+  transition: 0.4s ease all;
+}
+
+button {
+  outline: none;
+  /* transition: 0.4s ease all; */
+}
+
+a:hover,
+a:focus,
+button:focus,
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+img {
+  max-width: 100%;
+}
+
+.accordion-item-container {
+  transition: height 0.2s ease-in-out;
+  overflow: hidden;
+}
+
+.gradient-button {
+  background-image: linear-gradient(to right, #b88d3d, #d3b375, #f3dfb3, #b48836);
+}
+
+.mobile-bg-gold {
+  background-image: url("/assets/bg-gold.svg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-position: fixed;
+}
+
+.desktop-bg-gold {
+  background-image: url("/assets/bg-desktop.svg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-position: fixed;
+}
+
+.shadow-button {
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
+}
+
+/* ====== LUXURY GOLD GRADIENT ====== */
+
+/* Main luxury gold gradient - matches the exact gradient from your image */
+.bg-luxury-gold {
+  background: linear-gradient(
+    180deg,
+    #b48836 0%,
+    /* Medium gold */ #c49d51 18%,
+    /* Rich gold */ #e5c37d 26%,
+    /* Deep gold */ #e9c782 32%,
+    /* Dark gold */ #debe79 53%,
+    /* Mid gold */ #c49d51 65%,
+    /* Light gold return */ #c69143 85% /* Final gold at bottom */
+  );
+}
+
+.bg-luxury-gold-desktop {
+  background: linear-gradient(
+    180deg,
+    #eed194 0%,
+    /* Medium gold */ #d8b671 8%,
+    /* Rich gold */ #c49d51 18%,
+    /* Deep gold */ #b88d3d 26%,
+    /* Dark gold */ #b48836 32%,
+    /* Mid gold */ #debe79 53%,
+    /* Light gold return */ #edd191 60%,
+    /* Light gold return */ #c69143 85%
+  );
+}
+
+/* ====== GRAIN EFFECT VARIATIONS ====== */
+
+.bg-luxury-grain {
+  background: linear-gradient(
+    180deg,
+    #878680 0%,
+    /* Medium gold */ #5b5b58 31%,
+    /* Rich gold */ #878680 60%,
+    /* Deep gold */ #585652 85%
+  );
+}
+
+/* Base setup for all grain effects */
+.add-grain-3 {
+  position: relative;
+}
+
+.add-grain-3::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* 3. RANDOM NOISE - SVG fractal noise (enhanced visibility) */
+.add-grain-3::before {
+  opacity: 0.35;
+  background-image: url("data:image/svg+xml,%3Csvg width='200' height='200' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.7 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
+  mix-blend-mode: multiply;
+}
+
+.rdp-chevron {
+  fill: #878680 !important;
+}
+
+.rdp-selected .rdp-day_button {
+  border: 1.5px solid #c69143 !important;
+}
+
+.rdp-today {
+  font-weight: 700 !important;
+  color: #878680 !important;
+  text-decoration: underline !important;
+}
+
+.rdp-day_button:hover {
+  color: #878680 !important;
+}
+
+.rdp-day_button:focus {
+  color: #878680 !important;
+}
+
+.rdp-selected {
+  color: #c69143 !important;
+}
+
+.rdp-month_caption {
+  height: fit-content !important;
+}
