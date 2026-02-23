@@ -33,7 +33,7 @@ const Container: React.FC<ContainerProps> = ({
       {...props}
       id={id}
     >
-      <div className="z-10 min-h-full px-4">
+      <div className="z-10 min-h-full">
         <div
           className={classNames(
             className,

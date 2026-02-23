@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import { BrowserMultiFormatReader, type IScannerControls } from "@zxing/browser";
 import { displayFontMedium, bodyFontRegular } from "@/fonts";
 import Button from "../common/button";
@@ -19,6 +19,15 @@ function getErrorMessage(error: unknown): string {
     return error.message;
   }
   return "Unable to start camera scanner.";
+}
+
+function pickPreferredCamera(devices: MediaDeviceInfo[]): MediaDeviceInfo | undefined {
+  if (devices.length === 0) return undefined;
+
+  const rearCameraRegex =
+    /(back|rear|environment|traseira|trasera|arriere|arrière|rueck|后置|後置|背面)/i;
+
+  return devices.find((device) => rearCameraRegex.test(device.label)) ?? devices[0];
 }
 
 function extractCheckInToken(scannedText: string): string | null {
@@ -58,11 +67,14 @@ export default function CheckInScanner() {
   const [scanResult, setScanResult] = useState<ScanResultState | null>(null);
   const [processing, setProcessing] = useState(false);
   const [lastScannedValue, setLastScannedValue] = useState("");
+  const [manualInput, setManualInput] = useState("");
+  const [activeCameraLabel, setActiveCameraLabel] = useState("");
 
   const stopScanner = useCallback(() => {
     controlsRef.current?.stop();
     controlsRef.current = null;
     setCameraReady(false);
+    setActiveCameraLabel("");
   }, []);
 
   const consumeCheckInToken = useCallback(async (token: string) => {
@@ -134,9 +146,12 @@ export default function CheckInScanner() {
 
     try {
       const scanner = new BrowserMultiFormatReader();
+      const devices = await BrowserMultiFormatReader.listVideoInputDevices();
+      const preferredCamera = pickPreferredCamera(devices);
+      const selectedDeviceId = preferredCamera?.deviceId;
 
       const controls = await scanner.decodeFromVideoDevice(
-        undefined,
+        selectedDeviceId,
         videoRef.current,
         (result, error) => {
           if (result && !processingRef.current) {
@@ -174,6 +189,7 @@ export default function CheckInScanner() {
 
       controlsRef.current = controls;
       setCameraReady(true);
+      setActiveCameraLabel(preferredCamera?.label || "Default camera");
     } catch (error: unknown) {
       setCameraError(getErrorMessage(error));
       setCameraReady(false);
@@ -192,6 +208,28 @@ export default function CheckInScanner() {
     warning: "border-amber-300/40 bg-amber-500/10 text-amber-100",
     error: "border-red-300/40 bg-red-500/10 text-red-100"
   };
+
+  const handleManualSubmit = useCallback(
+    (event: FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+
+      const rawInput = manualInput.trim();
+      if (!rawInput) {
+        setScanResult({
+          level: "error",
+          title: "Missing input",
+          message: "Paste a QR URL or token to continue."
+        });
+        return;
+      }
+
+      const token = extractCheckInToken(rawInput) ?? rawInput;
+      setLastScannedValue(rawInput);
+      stopScanner();
+      void consumeCheckInToken(token);
+    },
+    [consumeCheckInToken, manualInput, stopScanner]
+  );
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col items-center px-4 py-8 text-white">
@@ -220,6 +258,10 @@ export default function CheckInScanner() {
           ) : null}
         </div>
 
+        {activeCameraLabel ? (
+          <p className="mt-2 text-xs text-white/70">Camera: {activeCameraLabel}</p>
+        ) : null}
+
         <div className="mt-4 flex flex-wrap gap-3">
           <Button
             size="xl"
@@ -233,6 +275,32 @@ export default function CheckInScanner() {
             {processing ? "Processing..." : "Scan Next"}
           </Button>
         </div>
+
+        <form className="mt-4 space-y-2" onSubmit={handleManualSubmit}>
+          <label htmlFor="manual-token" className="block text-xs uppercase tracking-[0.08em] text-white/75">
+            Manual check-in (paste QR URL or token)
+          </label>
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <input
+              id="manual-token"
+              type="text"
+              value={manualInput}
+              onChange={(event) => {
+                setManualInput(event.target.value);
+              }}
+              placeholder="https://.../check-in/consume?token=..."
+              className="h-11 w-full rounded-md border border-white/20 bg-black/40 px-3 text-sm text-white placeholder:text-white/45 focus:border-white/40 focus:outline-none"
+            />
+            <Button
+              size="lg"
+              className="h-11 min-w-[132px] uppercase"
+              type="submit"
+              disabled={processing}
+            >
+              Submit Token
+            </Button>
+          </div>
+        </form>
 
         {cameraError ? (
           <div className="mt-4 rounded-md border border-red-300/40 bg-red-500/10 px-4 py-3 text-sm text-red-100">

@@ -8,7 +8,7 @@ import React, {
   forwardRef,
   useCallback
 } from "react";
-import QRious from "qrious";
+import QRCodeGenerator from "qrcode";
 
 export interface QRCodeProps {
   errorCorrection?: "L" | "M" | "Q" | "H";
@@ -40,25 +40,39 @@ const QRCode = forwardRef<QRCodeRef, QRCodeProps>(
   ) => {
     const [image, setImage] = useState<string>("");
     const [error, setError] = useState<string>("");
-    const qrCodeRef = useRef<QRious | null>(null);
+    const generationIdRef = useRef(0);
 
-    const generateQrCode = useCallback(() => {
-      if (!qrCodeRef.current || !value) return;
+    const generateQrCode = useCallback(async () => {
+      const generationId = ++generationIdRef.current;
+
+      if (!value) {
+        setImage("");
+        setError("");
+        return;
+      }
 
       try {
-        qrCodeRef.current.set({
-          background,
-          foreground: color,
-          level: errorCorrection,
-          padding,
-          size,
-          value
+        const newImage = await QRCodeGenerator.toDataURL(value, {
+          errorCorrectionLevel: errorCorrection,
+          width: size,
+          margin: Math.max(1, padding),
+          color: {
+            dark: color,
+            light: background
+          }
         });
 
-        const newImage = qrCodeRef.current.toDataURL("image/png");
+        if (generationId !== generationIdRef.current) {
+          return;
+        }
+
         setImage(newImage);
         setError("");
       } catch (err) {
+        if (generationId !== generationIdRef.current) {
+          return;
+        }
+
         const errorMessage = err instanceof Error ? err.message : "Failed to generate QR code";
         setError(errorMessage);
         console.error("QR Code generation error:", err);
@@ -80,25 +94,8 @@ const QRCode = forwardRef<QRCodeRef, QRCodeProps>(
     }));
 
     useEffect(() => {
-      try {
-        qrCodeRef.current = new QRious();
-        if (value) {
-          generateQrCode();
-        }
-      } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : "Failed to initialize QR code library";
-        setError(errorMessage);
-        console.error("QR Code initialization error:", err);
-      }
-    }, [value, generateQrCode]);
-
-    // Regenerate QR code when dependencies change
-    useEffect(() => {
-      if (value && qrCodeRef.current) {
-        generateQrCode();
-      }
-    }, [value, errorCorrection, background, color, size, padding, generateQrCode]);
+      void generateQrCode();
+    }, [generateQrCode]);
 
     if (error) {
       return <div className="error text-sm text-red-500">{error}</div>;
@@ -118,4 +115,3 @@ const QRCode = forwardRef<QRCodeRef, QRCodeProps>(
 QRCode.displayName = "QRCode";
 
 export default QRCode;
-

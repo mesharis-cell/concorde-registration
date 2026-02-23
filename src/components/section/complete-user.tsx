@@ -5,6 +5,9 @@ import Button from "../common/button";
 import { displayFontMedium } from "@/fonts";
 import { useRouter } from "next/navigation";
 import QRCode, { type QRCodeRef } from "../common/qr-code";
+import { FcGoogle } from "react-icons/fc";
+import { FaApple } from "react-icons/fa";
+import { FiDownload, FiShare2 } from "react-icons/fi";
 
 interface CompleteUserProps {
   name?: string;
@@ -112,18 +115,19 @@ function CompleteUser({ name, email, wallet, checkIn }: CompleteUserProps) {
 
   const hasWallet = Boolean(wallet?.googleWalletUrl);
   const hasQrPayload = Boolean(checkIn?.qrPayloadUrl);
+  const availabilityMessage =
+    hasQrPayload && !hasWallet
+      ? "Google Wallet pass is unavailable right now. You can still use the QR code for check-in."
+      : !hasQrPayload && hasWallet
+        ? "Check-in QR is unavailable right now. You can still use your Google Wallet pass for entry."
+        : !hasQrPayload && !hasWallet
+          ? "Google Wallet pass and check-in QR are currently unavailable. Please return to registration and try again."
+          : null;
 
   return (
     <div
       className={`mx-auto flex h-full w-full max-w-2xl grow flex-col items-center justify-center space-y-5 px-2 pt-6 pb-10 text-center text-lg sm:space-y-6 sm:px-4 sm:text-xl ${displayFontMedium.className}`}
     >
-      <h1 className="text-2xl leading-tight sm:text-3xl">
-        {`Thank you${name ? `, ${name}` : ""}.`}
-        <br />
-        Your registration has been confirmed.
-      </h1>
-
-      {email ? <p className="text-sm text-white/80">{email}</p> : null}
 
       <p className="max-w-xl text-sm text-white/90 sm:text-base">
         Save your pass or screenshot your QR code. Show it at the entrance on event day.
@@ -134,65 +138,88 @@ function CompleteUser({ name, email, wallet, checkIn }: CompleteUserProps) {
           We could not prepare your check-in QR yet. Please return to registration and try again.
         </div>
       ) : (
-        <div className="w-full max-w-[280px] rounded-xl border border-white/15 bg-black/20 p-3 sm:max-w-[320px] sm:p-6">
+        <div className="w-full max-w-[248px] rounded-xl border border-white/15 bg-black/20 p-3 sm:max-w-[288px] sm:p-5">
           <QRCode
             ref={qrCodeRef}
             value={checkIn?.qrPayloadUrl ?? ""}
-            size={260}
+            size={240}
             color="#000000"
             background="#ffffff"
-            errorCorrection="M"
-            className="mx-auto aspect-square h-auto w-full max-w-[240px] rounded-md bg-white p-2 sm:max-w-[260px]"
+            className="mx-auto block aspect-square h-auto w-full max-w-[208px] rounded-md bg-white sm:max-w-[220px]"
           />
         </div>
       )}
 
-      <div className="grid w-full max-w-lg grid-cols-1 gap-3 sm:grid-cols-2">
-        <Button
-          size="xl"
-          className="uppercase"
-          onClick={() => {
-            if (!hasWallet || !wallet?.googleWalletUrl) return;
-            window.open(wallet.googleWalletUrl, "_blank", "noopener,noreferrer");
-          }}
-          disabled={!hasWallet}
-        >
-          Add to Google Wallet
-        </Button>
+      <div className="w-full max-w-lg space-y-3 text-left">
+        <div className="rounded-xl border border-white/15 bg-black/20 p-4">
+          <p className="mb-3 text-xs tracking-[0.12em] text-white/70 uppercase">Wallet Passes</p>
+          <div className="grid grid-cols-1 gap-3">
+            <button
+              type="button"
+              aria-label="Add to Google Wallet"
+              onClick={() => {
+                if (!hasWallet || !wallet?.googleWalletUrl) return;
+                window.open(wallet.googleWalletUrl, "_blank", "noopener,noreferrer");
+              }}
+              disabled={!hasWallet}
+              className="flex h-12 w-full items-center justify-center gap-2 rounded-md border border-neutral-300 bg-white px-4 text-sm font-semibold text-black transition hover:bg-neutral-100 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <FcGoogle className="text-lg" />
+              <span>Add to Google Wallet</span>
+            </button>
 
-        <Button
-          size="xl"
-          className="uppercase"
-          onClick={() => {
-            const downloaded = downloadQrImage();
-            if (!downloaded) {
-              setShareError("Unable to download QR code.");
-            } else {
-              setShareError("");
-            }
-          }}
-          disabled={!hasQrPayload}
-        >
-          Download QR
-        </Button>
+            <button
+              type="button"
+              aria-label="Add to Apple Wallet"
+              className="flex h-12 w-full items-center justify-center gap-2 rounded-md border border-white/20 bg-white px-4 text-sm font-semibold text-black transition hover:bg-neutral-100"
+            >
+              <FaApple className="text-base" />
+              <span>Add to Apple Wallet</span>
+            </button>
+          </div>
+        </div>
 
-        <Button
-          size="xl"
-          className="uppercase sm:col-span-2"
-          onClick={() => {
-            void handleShare();
-          }}
-          disabled={!hasQrPayload || sharing}
-        >
-          {sharing ? "Sharing..." : "Share"}
-        </Button>
+        <div className="flex flex-row items-center justify-center gap-4 px-2">
+          <hr className="flex-1 border-white/15" />
+          <p className="text-xs tracking-[0.12em] text-white/70 uppercase">OR</p>
+          <hr className="flex-1 border-white/15" />
+        </div>
+
+        <div className="rounded-xl border border-white/15 bg-black/20 p-3 sm:p-4">
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            <Button
+              size="lg"
+              className="flex h-10 items-center justify-center gap-2 px-4 text-[13px] tracking-[0.08em] uppercase sm:h-11 sm:text-sm"
+              onClick={() => {
+                const downloaded = downloadQrImage();
+                if (!downloaded) {
+                  setShareError("Unable to download QR code.");
+                } else {
+                  setShareError("");
+                }
+              }}
+              disabled={!hasQrPayload}
+            >
+              <FiDownload className="text-sm" />
+              <span>Download QR</span>
+            </Button>
+
+            <Button
+              size="lg"
+              className="flex h-10 items-center justify-center gap-2 px-4 text-[13px] tracking-[0.08em] uppercase sm:h-11 sm:text-sm"
+              onClick={() => {
+                void handleShare();
+              }}
+              disabled={!hasQrPayload || sharing}
+            >
+              <FiShare2 className="text-sm" />
+              <span>{sharing ? "Sharing..." : "Share"}</span>
+            </Button>
+          </div>
+        </div>
       </div>
 
-      {!hasWallet ? (
-        <p className="text-sm text-amber-200">
-          Wallet pass URL is unavailable right now. Please contact support before the event.
-        </p>
-      ) : null}
+      {availabilityMessage ? <p className="text-sm text-amber-200">{availabilityMessage}</p> : null}
 
       {shareError ? <p className="text-sm text-red-300">{shareError}</p> : null}
 
