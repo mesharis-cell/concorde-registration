@@ -82,7 +82,7 @@ export default function CheckInScanner() {
     setScanResult(null);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/v1/public/check-in/consume`, {
+      const response = await fetch(`${API_BASE_URL}/v1/public/check-in/consume`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

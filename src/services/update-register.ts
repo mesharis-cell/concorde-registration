@@ -52,10 +52,46 @@ export interface RegistrationError {
 
 export type RegistrationResponse = RegistrationSuccess | RegistrationError;
 
+export interface PassPreviewSuccess {
+  success: true;
+  data: {
+    event: {
+      id: string;
+      name: string;
+      shortName: string;
+    };
+    attendee: {
+      id: string;
+      email: string;
+      firstName: string;
+      lastName: string;
+    };
+    wallet: {
+      googleWalletUrl: string;
+      passReferenceId: string;
+      expiresAt: string;
+    } | null;
+    checkIn: {
+      qrPayloadUrl: string;
+      token: string;
+      expiresAt: string;
+      passReferenceId: string;
+    };
+  };
+}
+
+export interface PassPreviewError {
+  success: false;
+  error: string;
+  message?: string;
+  details?: string;
+}
+
+export type PassPreviewResponse = PassPreviewSuccess | PassPreviewError;
+
 // Environment configuration using existing .env file
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3001";
-const API_VERSION = "v1";
-const PUBLIC_API_PREFIX = `/api/${API_VERSION}/public`;
+const PUBLIC_API_PREFIX = "/v1/public";
 const EVENT_ID_QUERY_KEYS = ["eventId", "event_id", "event", "id"] as const;
 
 export const API_BASE_URL_WITH_PREFIX = `${API_BASE_URL}${PUBLIC_API_PREFIX}`;
@@ -112,7 +148,7 @@ export async function registerAttendee(
   payload: RegistrationPayload
 ): Promise<RegistrationResponse> {
   try {
-    const response = await httpClient.post(`/api/v1/public/events/${eventId}/register`, payload);
+    const response = await httpClient.post(`/v1/public/events/${eventId}/register`, payload);
     return response.data as RegistrationResponse;
   } catch (error: unknown) {
     // Extract error message from axios error response
@@ -127,6 +163,32 @@ export async function registerAttendee(
       success: false,
       error: errorMessage,
       message: axiosError.response?.data?.message
+    };
+  }
+}
+
+export async function getPassPreview(token: string): Promise<PassPreviewResponse> {
+  try {
+    const response = await httpClient.get(
+      `/v1/public/check-in/pass?token=${encodeURIComponent(token)}`
+    );
+    return response.data as PassPreviewResponse;
+  } catch (error: unknown) {
+    const axiosError = error as AxiosError<{
+      error?: string;
+      message?: string;
+      details?: string;
+    }>;
+
+    return {
+      success: false,
+      error:
+        axiosError.response?.data?.error ||
+        axiosError.response?.data?.message ||
+        axiosError.message ||
+        "Failed to load pass",
+      message: axiosError.response?.data?.message,
+      details: axiosError.response?.data?.details
     };
   }
 }

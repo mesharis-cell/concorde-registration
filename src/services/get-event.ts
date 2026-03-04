@@ -122,7 +122,7 @@ export type EventInfoResponse = EventInfoSuccess | EventInfoError;
 
 export async function getEventInfo(eventId: string): Promise<EventInfoResponse> {
   try {
-    const response = await httpClient.get(`/api/v1/public/events/${eventId}/info`);
+    const response = await httpClient.get(`/v1/public/events/${eventId}/info`);
     return response.data as EventInfoResponse;
   } catch (error: unknown) {
     const axiosError = error as AxiosError;
