@@ -175,7 +175,7 @@ function CompleteUser({ name, email, wallet, checkIn }: CompleteUserProps) {
               disabled={true}
             >
               <FaApple className="text-base" />
-              <span>Add to Apple Wallet (Requires Apple Approval)</span>
+              <span>Unavailable for demo (Requires Apple Approval)</span>
             </button>
           </div>
         </div>
