@@ -167,13 +167,15 @@ function CompleteUser({ name, email, wallet, checkIn }: CompleteUserProps) {
               <span>Add to Google Wallet</span>
             </button>
 
+            {/* TODO: Add Apple Wallet support */}
             <button
               type="button"
               aria-label="Add to Apple Wallet"
-              className="flex h-12 w-full items-center justify-center gap-2 rounded-md border border-white/20 bg-white px-4 text-sm font-semibold text-black transition hover:bg-neutral-100"
+              className="flex h-12 w-full items-center justify-center gap-2 rounded-md border border-white/20 bg-white px-4 text-sm font-semibold text-black transition hover:bg-neutral-100 disabled:cursor-not-allowed disabled:opacity-50"
+              disabled={true}
             >
               <FaApple className="text-base" />
-              <span>Add to Apple Wallet</span>
+              <span>Add to Apple Wallet (Requires Apple Approval)</span>
             </button>
           </div>
         </div>
